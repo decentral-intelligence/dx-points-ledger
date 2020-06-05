@@ -1,0 +1,51 @@
+{
+  "name": "dx-points-backbone",
+  "version": "1.0.0",
+  "description": "Decentralized Backbone for DxPoints et al",
+  "scripts": {
+    "start": "npm run build && npm run ipfs:up && node ./build/index.js",
+    "dev": "nodemon",
+    "ipfs:up": "docker run ipfs/go-ipfs -d",
+    "build": "rimraf ./build && tsc",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/decentral-intelligence/dx-points-backbone.git"
+  },
+  "keywords": [
+    "web3.0",
+    "ipfs",
+    "orbitdb",
+    "dextra"
+  ],
+  "author": "ohager",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/decentral-intelligence/dx-points-backbone/issues"
+  },
+  "homepage": "https://github.com/decentral-intelligence/dx-points-backbone#readme",
+  "devDependencies": {
+    "@types/node": "^14.0.11",
+    "@types/pino": "^6.0.1",
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
+    "eslint": "^7.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "husky": "^4.2.5",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "ipfs-http-client": "^44.1.1",
+    "orbit-db": "^0.24.1",
+    "pino": "^6.3.2",
+    "pino-pretty": "^4.0.0"
+  }
+}
