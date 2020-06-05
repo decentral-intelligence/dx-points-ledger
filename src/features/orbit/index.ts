@@ -6,7 +6,9 @@ import { logger } from '../logger'
 
 export class OrbitDbService {
   private orbitdb: any = null
+
   constructor(private ipfs: any) {}
+
   async start() {
     logger.info('Connecting to IPFS daemon')
     this.ipfs = IpfsClient()
