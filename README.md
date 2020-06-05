@@ -10,6 +10,10 @@ storage of DxPoints (Working Title)
 - NodeJS (>=14) installed
 - This service needs a running [IPFS Daemon](https://docs.ipfs.io/install/command-line-quick-start/#install-ipfs).
 
+To start the daemon (with default settings) you need pubsub enabled, e.g. run
+
+`ipfs daemon --enable-pubsub-experiment`
+
 ## Installation
 
 Just do `npm install` - the rest is coffee time
