@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Decentralized Backbone for DxPoints et al",
   "scripts": {
-    "start": "npm run build && npm run ipfs:up && node ./build/index.js",
+    "start": "npm run build && node ./build/index.js",
     "dev": "nodemon",
     "ipfs:up": "docker run ipfs/go-ipfs -d",
     "build": "rimraf ./build && tsc",
