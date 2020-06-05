@@ -1,5 +1,5 @@
 import { logger } from './features/logger'
-import { orbitDbService } from './features/orbitdb'
+import { orbitDbService } from './features/orbit'
 
 async function stop() {
   logger.info('Shutting down')
