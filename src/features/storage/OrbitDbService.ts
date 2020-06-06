@@ -2,10 +2,12 @@
 import IpfsClient from 'ipfs-http-client'
 // @ts-ignore
 import OrbitDB from 'orbit-db'
-import { logger } from '../logger'
+import { logger } from '../@common/logger'
 
 export class OrbitDbService {
   private orbitdb: any = null
+  private transactions: any = null
+  private accounts: any = null
 
   constructor(private ipfs: any = IpfsClient()) {}
 
@@ -14,9 +16,8 @@ export class OrbitDbService {
     this.ipfs = IpfsClient()
     logger.info('Starting OrbitDb...')
     this.orbitdb = await OrbitDB.createInstance(this.ipfs)
-    // TODO: define proper database type
-    const db = await this.orbitdb.log('hellos')
-    logger.info('Orbit Database instantiated', db.identity.toJSON())
+    this.transactions = await this.orbitdb.log('xpoints:transactions')
+    logger.info(`Orbit Database instantiated ${JSON.stringify(this.orbitdb.identity.id)}`)
   }
 
   async stop() {

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Decentralized Backbone for DxPoints et al",
   "scripts": {
-    "start": "npm run build && node ./build/index.js",
+    "start": "npm run build && node ./build/main.js",
     "dev": "nodemon",
     "ipfs:up": "docker run ipfs/go-ipfs -d",
     "build": "rimraf ./build && tsc",
@@ -19,6 +19,8 @@
     "web3.0",
     "ipfs",
     "orbitdb",
+    "graphql",
+    "apollo",
     "dextra"
   ],
   "author": "ohager",
@@ -45,6 +47,8 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "apollo-server": "^2.14.2",
+    "graphql": "^15.0.0",
     "ipfs-http-client": "^44.1.1",
     "orbit-db": "^0.24.1",
     "pino": "^6.3.2",
