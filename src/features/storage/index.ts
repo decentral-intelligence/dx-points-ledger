@@ -1,3 +1,1 @@
-import { OrbitDbService } from './OrbitDbService'
-
-export const orbitDbService = new OrbitDbService()
+export { OrbitDbService } from './OrbitDbService'

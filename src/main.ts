@@ -1,18 +1,19 @@
 import { logger } from './features/@common/logger'
-import { orbitDbService } from './features/storage'
-import { AccountRole } from './features/storage/types/AccountRole'
+import { OrbitDbService } from './features/storage'
 import { Account } from './features/storage/models/Account'
+import { onShutdown } from 'node-graceful-shutdown'
 
 let intervalHandle: NodeJS.Timeout | null = null
+let orbitDbService = new OrbitDbService()
 
-async function stop() {
+onShutdown(async () => {
   logger.info('Shutting down')
-  await orbitDbService.stop()
   if (intervalHandle) {
     clearInterval(intervalHandle)
   }
+  await orbitDbService.stop()
   logger.info('Done')
-}
+})
 
 async function start() {
   logger.info('Starting XPoints Backbone')
@@ -26,10 +27,6 @@ async function start() {
     let accounts = await orbitDbService.accounts.get('')
     accounts.forEach((a: Account): void => console.log(a))
   }, 5000)
-
-  process.on('SIGTERM', stop)
-  process.on('SIGINT', stop)
-  process.on('SIGQUIT', stop)
 }
 
 start()

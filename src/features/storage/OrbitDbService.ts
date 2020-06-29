@@ -3,20 +3,24 @@ import IpfsClient from 'ipfs-http-client'
 import OrbitDB from 'orbit-db'
 import { logger } from '../@common/logger'
 import { Account } from './models/Account'
-import * as crypto from 'crypto'
 import { AccountRole } from './types/AccountRole'
 import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
+import { createHash } from 'crypto'
 
 interface CreateAccountArgs {
   email: string
   role: AccountRole
 }
 
+const createEntityIdForUniques = (uniqueValue: string): string =>
+  createHash('sha256').update(uniqueValue, 'utf8').digest('base64')
+
 export class OrbitDbService {
   get accounts(): any {
     return this._accounts
   }
+
   private orbitdb: OrbitDB | undefined
   private transactions: EventStore<any> | undefined
   private _accounts: DocumentStore<Account> | undefined
@@ -39,7 +43,7 @@ export class OrbitDbService {
     logger.info(`Collection 'transactions' initialized - Address: ${this.transactions?.address}`)
   }
 
-  async start() {
+  public async start() {
     logger.info('Starting OrbitDb...')
     this.orbitdb = await OrbitDB.createInstance(this.ipfs)
     logger.info(`Orbit Database instantiated ${JSON.stringify(this.orbitdb?.id)}`)
@@ -47,16 +51,12 @@ export class OrbitDbService {
     await this.initTransactions()
   }
 
-  private static createEntityIdForUniques(uniqueValue: string): string {
-    return crypto.createHash('sha256').update(uniqueValue, 'utf8').digest('base64')
-  }
-
-  async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
+  public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
     if (!this._accounts) {
       throw new Error('OrbitDB not started yet')
     }
     const { email } = accountArgs
-    const id = OrbitDbService.createEntityIdForUniques(email)
+    const id = createEntityIdForUniques(email)
     const foundAccounts = await this._accounts.get(id)
     // if (foundAccounts.length > 0) {
     //     throw new Error(`Account [${email}] already exists`)

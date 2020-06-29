@@ -51,6 +51,7 @@
     "apollo-server": "^2.15.0",
     "graphql": "^15.2.0",
     "ipfs-http-client": "^44.3.0",
+    "node-graceful-shutdown": "^1.0.3",
     "orbit-db": "^0.24.2",
     "pino": "^6.3.2",
     "pino-pretty": "^4.0.0"
