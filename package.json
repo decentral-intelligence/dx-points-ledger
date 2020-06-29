@@ -32,6 +32,8 @@
   "devDependencies": {
     "@types/node": "^14.0.14",
     "@types/pino": "^6.3.0",
+    "@types/orbit-db": "git+https://github.com/orbitdb/orbit-db-types.git",
+    "@types/graphql": "^14.5.0",
     "@typescript-eslint/eslint-plugin": "^3.5.0",
     "@typescript-eslint/parser": "^3.5.0",
     "eslint": "^7.3.1",
@@ -47,9 +49,9 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
-    "@types/orbit-db": "git+https://github.com/orbitdb/orbit-db-types.git",
     "apollo-server": "^2.15.0",
     "graphql": "^15.2.0",
+    "graphql-tools": "^6.0.9",
     "ipfs-http-client": "^44.3.0",
     "node-graceful-shutdown": "^1.0.3",
     "orbit-db": "^0.24.2",

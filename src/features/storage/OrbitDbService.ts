@@ -55,12 +55,15 @@ export class OrbitDbService {
     if (!this._accounts) {
       throw new Error('OrbitDB not started yet')
     }
+
     const { email } = accountArgs
     const id = createEntityIdForUniques(email)
+
     const foundAccounts = await this._accounts.get(id)
-    // if (foundAccounts.length > 0) {
-    //     throw new Error(`Account [${email}] already exists`)
-    // }
+    if (foundAccounts.length > 0) {
+      throw new Error(`Account [${email}] already exists`)
+    }
+
     const newAccount = {
       ...accountArgs,
       _id: id,
@@ -73,9 +76,7 @@ export class OrbitDbService {
   }
 
   async stop() {
-    logger.info('Stopping OrbitDB')
-    if (this.orbitdb) {
-      await this.orbitdb.stop()
-    }
+    logger.info('Stopping OrbitDB...')
+    await this.orbitdb?.stop()
   }
 }

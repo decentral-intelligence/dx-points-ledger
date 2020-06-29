@@ -1,0 +1,7 @@
+type Transaction {
+  id: String!
+  sender: String!
+  recipient: String!
+  amount: Int!
+  timestamp: Int!
+}

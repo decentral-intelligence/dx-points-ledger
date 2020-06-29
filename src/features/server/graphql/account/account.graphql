@@ -1,0 +1,10 @@
+type Account {
+  id: String!
+  email: String!
+  balance: Int!
+  isActive: Boolean!
+  """
+  the list of Transactions of this Account
+  """
+  transactions: [Transaction]
+}
