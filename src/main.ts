@@ -2,6 +2,8 @@ import { logger } from './features/@common/logger'
 import { orbitDbService } from './features/storage'
 import { server } from './features/server'
 import { onShutdown } from 'node-graceful-shutdown'
+// @ts-ignore
+import IpfsClient from 'ipfs-http-client'
 
 let intervalHandle: NodeJS.Timeout | null = null
 
@@ -16,7 +18,7 @@ onShutdown(async () => {
 
 async function start() {
   logger.info('Starting XPoints Backbone')
-  await orbitDbService.start()
+  await orbitDbService.start(IpfsClient())
   await server.start()
 
   // intervalHandle = setInterval(async () => {
