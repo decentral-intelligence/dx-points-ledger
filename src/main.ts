@@ -1,11 +1,9 @@
 import { logger } from './features/@common/logger'
-import { OrbitDbService } from './features/storage'
-import { Server } from './features/server'
+import { orbitDbService } from './features/storage'
+import { server } from './features/server'
 import { onShutdown } from 'node-graceful-shutdown'
 
 let intervalHandle: NodeJS.Timeout | null = null
-let orbitDbService = new OrbitDbService()
-let server = new Server()
 
 onShutdown(async () => {
   logger.info('Shutting down')

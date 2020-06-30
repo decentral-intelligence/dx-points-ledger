@@ -1,5 +1,5 @@
 type Account {
-  id: String!
+  _id: String!
   email: String!
   balance: Int!
   isActive: Boolean!

@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { resolvers, typeDefs } from './graphql'
 import { logger } from '../@common/logger'
+import { AccountService, orbitDbService } from '../storage'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

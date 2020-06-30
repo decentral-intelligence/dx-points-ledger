@@ -1,9 +1,17 @@
 type Query {
+  getAccountByEmail(email: String!): Account
+  getAccountById(id: ID!): Account
   accounts: [Account]
+}
+
+enum AccountRole {
+  Admin
+  Common
 }
 
 input AccountInput {
   email: String!
+  role: AccountRole!
 }
 
 type Mutation {

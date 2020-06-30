@@ -1,5 +1,5 @@
 type Transaction {
-  id: String!
+  _id: String!
   sender: String!
   recipient: String!
   amount: Int!
