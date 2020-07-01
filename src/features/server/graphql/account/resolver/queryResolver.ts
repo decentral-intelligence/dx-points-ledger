@@ -1,4 +1,5 @@
 import { provideAccountService } from './provideAccountService'
+import { accountTransactionsResolver } from './accountTransactionsResolver'
 
 export const queryResolver = {
   accounts: () => provideAccountService().getAllAccounts(),
