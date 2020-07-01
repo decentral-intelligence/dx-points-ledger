@@ -3,6 +3,7 @@ import { logger } from '../@common/logger'
 import { Account } from './models/Account'
 import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
+import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
 
 const DatabaseNames = {
   Accounts: 'xpoints:accounts',
@@ -28,9 +29,9 @@ export class OrbitDbService {
   private _transactions: EventStore<any> | undefined
   private _accounts: DocumentStore<Account> | undefined
 
-  private async initAccounts() {
+  private async initAccounts(address = DatabaseNames.Accounts): Promise<void> {
     logger.info(`Loading database '${DatabaseNames.Accounts}' collection...`)
-    this._accounts = await this.orbitdb?.docstore(DatabaseNames.Accounts, {
+    this._accounts = await this.orbitdb?.docstore(address, {
       accessController: {
         write: ['*'],
       },
@@ -41,23 +42,27 @@ export class OrbitDbService {
     )
   }
 
-  private async initTransactions() {
+  private async initTransactions(address = DatabaseNames.Transactions): Promise<void> {
     logger.info(`Loading database '${DatabaseNames.Transactions}' collection...`)
-    this._transactions = await this.orbitdb?.log(DatabaseNames.Transactions)
+    this._transactions = await this.orbitdb?.log(address)
     await this._transactions?.load()
     logger.info(
       `Database '${DatabaseNames.Transactions}' initialized - Address: ${this._transactions?.address}`,
     )
   }
 
-  public async start(ipfs: any) {
+  public async start(options: OrbitDbServiceOptions): Promise<void> {
+    const { accountsDatabaseAddress, ipfs, transactionsDatabaseAddress } = options
     logger.info('Starting OrbitDb...')
     this.orbitdb = await OrbitDB.createInstance(ipfs)
     logger.info(`Orbit Database instantiated ${JSON.stringify(this.orbitdb?.id)}`)
-    await Promise.all([this.initAccounts(), this.initTransactions()])
+    await Promise.all([
+      this.initAccounts(accountsDatabaseAddress),
+      this.initTransactions(transactionsDatabaseAddress),
+    ])
   }
 
-  public async stop() {
+  public async stop(): Promise<void> {
     logger.info('Stopping OrbitDB...')
     await this.orbitdb?.stop()
   }

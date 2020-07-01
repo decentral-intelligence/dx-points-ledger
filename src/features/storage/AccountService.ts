@@ -48,6 +48,7 @@ export class AccountService {
   }
 
   public getAllAccounts() {
-    return this.accounts.get('')
+    const accounts = this.accounts.get('')
+    return accounts
   }
 }

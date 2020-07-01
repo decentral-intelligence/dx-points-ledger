@@ -18,13 +18,11 @@ onShutdown(async () => {
 
 async function start() {
   logger.info('Starting XPoints Backbone')
-  await orbitDbService.start(IpfsClient())
+  await orbitDbService.start({
+    ipfs: IpfsClient(),
+    // TODO: make addresses configurable
+  })
   await server.start()
-
-  // intervalHandle = setInterval(async () => {
-  //     let accounts = await orbitDbService.accounts.get('')
-  //     accounts.forEach((a: Account): void => console.log(a))
-  // }, 5000)
 }
 
 start()
