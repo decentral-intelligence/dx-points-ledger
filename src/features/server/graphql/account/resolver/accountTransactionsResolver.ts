@@ -1,9 +1,7 @@
-import { provideAccountService } from './provideAccountService'
-import { logger } from '../../../../@common/logger'
-import { Account } from '@storage/models/Account'
-import { Transaction } from '@storage/models/Transaction'
+import { provideTransactionService } from '../../transaction/provideTransactionService'
+import { Transaction } from '../../../../storage/models/Transaction'
+import { Account } from '../../../../storage/models/Account'
 
-export const accountTransactionsResolver = (parent: Account, args: any): Transaction[] => {
-  console.log('accountTransactionsResolver', parent, args)
-  return []
+export const accountTransactionsResolver = (parent: Account): Transaction[] => {
+  return provideTransactionService().getTransactionsOfAccount(parent._id)
 }
