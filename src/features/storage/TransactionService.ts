@@ -29,9 +29,8 @@ export class TransactionService extends DataSource {
 
   public getTransaction(id: TransactionId): Transaction | null {
     const logEntry = this.transactions.get(id)
-
-    const transaction = logEntry.payload.value as Transaction
-
+    // TODO: treat unknown transactions
+    const transaction = logEntry.payload.value
     return {
       ...transaction,
       _id: logEntry.hash,
