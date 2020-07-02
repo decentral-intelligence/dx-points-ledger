@@ -1,7 +1,11 @@
 type Transaction {
   _id: String!
-  sender: String!
-  recipient: String!
+  sender: Account!
+  recipient: Account!
   amount: Int!
-  timestamp: Int!
+  timestamp: String!
+}
+
+extend type Query {
+  transaction(id: ID!): Transaction
 }

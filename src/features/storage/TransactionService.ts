@@ -45,7 +45,7 @@ export class TransactionService extends DataSource {
    * @return The hash/id of created transaction
    */
   public async airdrop(args: AirdropArgs): Promise<TransactionId> {
-    if (args.sender.role !== AccountRole.Admin) {
+    if (!args.sender.isOfRole(AccountRole.Admin)) {
       throw Error('Insufficient Permission')
     }
 
