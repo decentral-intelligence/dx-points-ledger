@@ -1,4 +1,4 @@
-import { orbitDbService, TransactionService } from '../../../storage'
+import { orbitDbService, TransactionService } from '../index'
 
 export const provideTransactionService = (): TransactionService =>
   new TransactionService(orbitDbService.transactions)

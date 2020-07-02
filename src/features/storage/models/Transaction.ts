@@ -1,10 +1,13 @@
+import { AccountId } from './Account'
 import { Entity } from './Entity'
 
+export type TransactionId = string
+
 export interface Transaction extends Entity {
-  sender: string
-  recipient: string
+  sender: AccountId
+  recipient: AccountId
   amount: number
   timestamp: number
-  hash: string
   signature: string
+  message: string
 }

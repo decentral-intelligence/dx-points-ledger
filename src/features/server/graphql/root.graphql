@@ -14,6 +14,14 @@ input AccountInput {
   role: AccountRole!
 }
 
+input AirdropInput {
+  sender: String!
+  recipient: String!
+  amount: Int!
+  reason: String
+}
+
 type Mutation {
   createAccount(args: AccountInput!): Account
+  #  airdropPoints(args: AirdropInput!): Transaction
 }

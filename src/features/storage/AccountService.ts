@@ -1,3 +1,4 @@
+import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import DocumentStore from 'orbit-db-docstore'
 import { Account } from './models/Account'
 import { logger } from '../@common/logger'
@@ -9,8 +10,10 @@ interface CreateAccountArgs {
   role: AccountRole
 }
 
-export class AccountService {
-  constructor(private accounts: DocumentStore<Account>) {}
+export class AccountService extends DataSource {
+  constructor(private accounts: DocumentStore<Account>) {
+    super()
+  }
 
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
     const { email } = accountArgs
