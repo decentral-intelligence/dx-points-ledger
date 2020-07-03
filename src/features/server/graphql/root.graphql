@@ -23,6 +23,7 @@ input AirdropInput {
 }
 
 type Mutation {
+  dropAll: Boolean
   createAccount(args: AccountInput!): Account
   airdropPoints(args: AirdropInput!): String
 }

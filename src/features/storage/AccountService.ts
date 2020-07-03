@@ -15,6 +15,10 @@ export class AccountService extends DataSource {
     super()
   }
 
+  public async drop(): Promise<void> {
+    return this.accounts.drop()
+  }
+
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
     const { email } = accountArgs
     const id = createEntityIdForUniques(email)

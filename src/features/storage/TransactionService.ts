@@ -16,6 +16,10 @@ export class TransactionService extends DataSource {
     super()
   }
 
+  public async drop(): Promise<void> {
+    return this.transactions.drop()
+  }
+
   public getTransactionsOfAccount(userId: AccountId): Transaction[] {
     return this.transactions
       .iterator({ limit: -1 })
