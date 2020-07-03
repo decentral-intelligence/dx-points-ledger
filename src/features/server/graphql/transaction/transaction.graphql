@@ -6,6 +6,13 @@ type Transaction {
   timestamp: String!
 }
 
-extend type Query {
-  transaction(id: ID!): Transaction
+input AirdropInput {
+  sender: String!
+  recipient: String!
+  amount: Int!
+  reason: String
+}
+
+extend type Mutation {
+  airdropPoints(args: AirdropInput!): String
 }

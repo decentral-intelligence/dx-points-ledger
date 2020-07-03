@@ -1,3 +1,13 @@
+enum AccountRole {
+  Admin
+  Common
+}
+
+input AccountInput {
+  email: String!
+  role: AccountRole!
+}
+
 type Account {
   _id: String!
   email: String!
@@ -8,4 +18,14 @@ type Account {
   the list of Transactions of this Account
   """
   transactions: [Transaction]
+}
+
+extend type Query {
+  getAccountByEmail(email: String!): Account
+  getAccountById(id: ID!): Account
+  accounts: [Account]
+}
+
+extend type Mutation {
+  createAccount(args: AccountInput!): Account
 }
