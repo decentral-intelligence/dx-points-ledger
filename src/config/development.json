@@ -1,0 +1,6 @@
+{
+  "db": {
+    "transactions": "xpoints:transactions",
+    "accounts": "xpoints:accounts"
+  }
+}

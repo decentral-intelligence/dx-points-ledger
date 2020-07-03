@@ -1,5 +1,5 @@
 export interface OrbitDbServiceOptions {
   ipfs: any
-  transactionsDatabaseAddress?: string
-  accountsDatabaseAddress?: string
+  transactionsDatabaseAddress: string
+  accountsDatabaseAddress: string
 }

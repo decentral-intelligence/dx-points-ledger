@@ -6,7 +6,7 @@
     "start": "npm run build && node ./build/main.js",
     "prebuild": "npm run prebuild:cleanup && npm run prebuild:copygql",
     "prebuild:cleanup": "rimraf ./build",
-    "prebuild:copygql": "copyfiles -u 1 \"./src/**/*.graphql\" ./build",
+    "prebuild:copygql": "copyfiles -u 1 \"./src/**/*.graphql\" \"./src/config/*.json\" ./build",
     "dev": "NODE_ENV=development nodemon",
     "ipfs:up": "docker run ipfs/go-ipfs -d",
     "build": "npm run prebuild && tsc",
@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/decentral-intelligence/dx-points-backbone#readme",
   "devDependencies": {
+    "@types/convict": "^5.2.1",
     "@types/graphql": "^14.5.0",
     "@types/node": "^14.0.14",
     "@types/pino": "^6.3.0",

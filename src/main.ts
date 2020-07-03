@@ -4,6 +4,7 @@ import { server } from './features/server'
 import { onShutdown } from 'node-graceful-shutdown'
 // @ts-ignore
 import IpfsClient from 'ipfs-http-client'
+import { config } from './config'
 
 let intervalHandle: NodeJS.Timeout | null = null
 
@@ -20,7 +21,8 @@ async function start() {
   logger.info('Starting XPoints Backbone')
   await orbitDbService.start({
     ipfs: IpfsClient(),
-    // TODO: make addresses configurable
+    transactionsDatabaseAddress: config.get('db.transactions'),
+    accountsDatabaseAddress: config.get('db.accounts'),
   })
   await server.start()
 }

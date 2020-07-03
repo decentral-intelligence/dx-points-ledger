@@ -5,11 +5,6 @@ import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
 import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
 
-const DatabaseNames = {
-  Accounts: 'xpoints:accounts',
-  Transactions: 'xpoints:transactions',
-}
-
 export class OrbitDbService {
   get transactions(): EventStore<any> {
     if (!this._transactions) {
@@ -29,26 +24,22 @@ export class OrbitDbService {
   private _transactions: EventStore<any> | undefined
   private _accounts: DocumentStore<Account> | undefined
 
-  private async initAccounts(address = DatabaseNames.Accounts): Promise<void> {
-    logger.info(`Loading database '${DatabaseNames.Accounts}' collection...`)
+  private async initAccounts(address: string): Promise<void> {
+    logger.info(`Loading database...`)
     this._accounts = await this.orbitdb?.docstore(address, {
       accessController: {
         write: ['*'],
       },
     })
     await this._accounts?.load()
-    logger.info(
-      `Database '${DatabaseNames.Accounts}' initialized - Address: ${this._accounts?.address}`,
-    )
+    logger.info(`Database initialized - Address: ${this._accounts?.address}`)
   }
 
-  private async initTransactions(address = DatabaseNames.Transactions): Promise<void> {
-    logger.info(`Loading database '${DatabaseNames.Transactions}' collection...`)
+  private async initTransactions(address: string): Promise<void> {
+    logger.info(`Loading database...`)
     this._transactions = await this.orbitdb?.log(address)
     await this._transactions?.load()
-    logger.info(
-      `Database '${DatabaseNames.Transactions}' initialized - Address: ${this._transactions?.address}`,
-    )
+    logger.info(`Database initialized - Address: ${this._transactions?.address}`)
   }
 
   public async start(options: OrbitDbServiceOptions): Promise<void> {
