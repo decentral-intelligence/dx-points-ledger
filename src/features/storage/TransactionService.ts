@@ -33,7 +33,7 @@ export class TransactionService extends DataSource {
 
   public getTransaction(id: TransactionId): Transaction | null {
     const logEntry = this.transactions.get(id)
-    // TODO: treat unknown transactions
+    if (!logEntry) return null
     const transaction = logEntry.payload.value
     return {
       ...transaction,
