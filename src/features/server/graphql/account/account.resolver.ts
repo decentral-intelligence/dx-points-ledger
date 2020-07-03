@@ -2,7 +2,7 @@ import { queryResolver } from './resolver/queryResolver'
 import { mutationResolver } from './resolver/mutationResolver'
 import { accountTransactionsResolver } from './resolver/accountTransactionsResolver'
 
-const AccountsResolver = {
+const AccountResolver = {
   Query: queryResolver,
   Mutation: mutationResolver,
   Account: {
@@ -10,4 +10,4 @@ const AccountsResolver = {
   },
 }
 
-export default AccountsResolver
+export default AccountResolver

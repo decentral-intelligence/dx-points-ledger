@@ -1,3 +1,4 @@
+import { DataSource } from 'apollo-datasource'
 import DocumentStore from 'orbit-db-docstore'
 import { Account } from './models/Account'
 import { logger } from '../@common/logger'
@@ -9,8 +10,10 @@ interface CreateAccountArgs {
   role: AccountRole
 }
 
-export class AccountService {
-  constructor(private accounts: DocumentStore<Account>) {}
+export class AccountService extends DataSource {
+  constructor(private accounts: DocumentStore<Account>) {
+    super()
+  }
 
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
     const { email } = accountArgs
@@ -21,12 +24,12 @@ export class AccountService {
       throw new Error(`Account [${email}] already exists`)
     }
 
-    const newAccount = {
+    const newAccount = Account.readFromJson({
       ...accountArgs,
       _id: id,
       isActive: true,
       balance: 0,
-    }
+    })
 
     // @ts-ignore
     await this.accounts.put(newAccount)
@@ -37,7 +40,7 @@ export class AccountService {
   public getAccountById(id: string): Account | null {
     const accounts = this.accounts.get(id)
     if (accounts.length > 0) {
-      return accounts[0]
+      return Account.readFromJson(accounts[0])
     }
     return null
   }
@@ -47,8 +50,7 @@ export class AccountService {
     return this.getAccountById(id)
   }
 
-  public getAllAccounts() {
-    const accounts = this.accounts.get('')
-    return accounts
+  public getAllAccounts(): Account[] {
+    return this.accounts.get('')
   }
 }

@@ -1,4 +1,4 @@
-import { provideAccountService } from './provideAccountService'
+import { provideAccountService } from '../../../../storage/utils'
 
 export const queryResolver = {
   accounts: () => provideAccountService().getAllAccounts(),

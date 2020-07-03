@@ -3,6 +3,7 @@ type Account {
   email: String!
   balance: Int!
   isActive: Boolean!
+  role: AccountRole!
   """
   the list of Transactions of this Account
   """

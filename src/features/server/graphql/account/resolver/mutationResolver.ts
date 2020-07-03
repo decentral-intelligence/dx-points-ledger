@@ -1,5 +1,5 @@
 import { logger } from '../../../../@common/logger'
-import { provideAccountService } from './provideAccountService'
+import { provideAccountService } from '../../../../storage/utils'
 
 export const mutationResolver = {
   createAccount: (parent: any, { args }: any): Promise<any> => {

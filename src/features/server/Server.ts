@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { resolvers, typeDefs } from './graphql'
 import { logger } from '../@common/logger'
-import { AccountService, orbitDbService } from '../storage'
+import { provideAccountService, provideTransactionService } from '../storage/utils'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -21,6 +21,10 @@ export class Server {
       ...DefaultConfig,
       resolvers,
       typeDefs,
+      dataSources: () => ({
+        accounts: provideAccountService(),
+        transactions: provideTransactionService(),
+      }),
     })
     const { url } = await this.server.listen({ port: 3001 })
     logger.info(`Apollo running on ${url}`)

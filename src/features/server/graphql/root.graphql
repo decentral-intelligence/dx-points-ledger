@@ -2,6 +2,7 @@ type Query {
   getAccountByEmail(email: String!): Account
   getAccountById(id: ID!): Account
   accounts: [Account]
+  transaction(id: ID!): Transaction
 }
 
 enum AccountRole {
@@ -14,6 +15,14 @@ input AccountInput {
   role: AccountRole!
 }
 
+input AirdropInput {
+  sender: String!
+  recipient: String!
+  amount: Int!
+  reason: String
+}
+
 type Mutation {
   createAccount(args: AccountInput!): Account
+  airdropPoints(args: AirdropInput!): String
 }
