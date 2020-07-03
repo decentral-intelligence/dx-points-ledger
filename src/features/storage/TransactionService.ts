@@ -3,6 +3,7 @@ import { Transaction, TransactionId } from './models/Transaction'
 import { DataSource } from 'apollo-datasource'
 import { Account, AccountId } from './models/Account'
 import { AccountRole } from './types/AccountRole'
+import { NotAllowedError } from '../../types/exceptions/NotAllowedError'
 
 export interface AirdropArgs {
   sender: Account
@@ -48,8 +49,8 @@ export class TransactionService extends DataSource {
    * @return The hash/id of created transaction
    */
   public async airdrop(args: AirdropArgs): Promise<TransactionId> {
-    if (!args.sender.isOfRole(AccountRole.Admin)) {
-      throw Error('Insufficient Permission')
+    if (!args.sender?.isOfRole(AccountRole.Admin)) {
+      throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
 
     const transaction = {
