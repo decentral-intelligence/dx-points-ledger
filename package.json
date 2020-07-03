@@ -54,7 +54,8 @@
   "dependencies": {
     "@types/orbit-db": "git+https://github.com/orbitdb/orbit-db-types.git",
     "apollo-server": "^2.15.0",
-    "graphql": "^15.2.0",
+    "convict": "^6.0.0",
+    "graphql": "^14.6.0",
     "graphql-tools": "^6.0.9",
     "ipfs-http-client": "^44.3.0",
     "node-graceful-shutdown": "^1.0.3",
