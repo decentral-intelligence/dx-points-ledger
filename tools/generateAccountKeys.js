@@ -1,3 +1,4 @@
+const { writeFileSync } = require('fs')
 const { prompt } = require('inquirer')
 const { generateKeyPairSync } = require('crypto')
 
@@ -38,9 +39,13 @@ const generateKeys = (passphrase) => {
 
   const keys = generateKeys(passphrase)
 
-  console.log('PUBLIC KEY')
-  console.log(keys.publicKey)
+  writeFileSync('publickey.pem', keys.publicKey, 'utf-8')
+  writeFileSync('privatekey.pem', keys.privateKey, 'utf-8')
 
-  console.log('\nPRIVATE KEY (store in a safe place together with the passphrase)')
-  console.log(keys.privateKey)
+  console.log('Keys stored successfully')
+  console.log(
+    'Store them in a safe place together with the used passphrase for the encrypted private key',
+  )
+  console.log('The public key is used for account creation')
+  console.log(keys.publicKey)
 })()
