@@ -6,10 +6,10 @@ export const transactionSenderResolver = (
   parent: Transaction,
   _: any,
   { dataSources }: CustomApolloContext,
-): Account | null => dataSources.accounts.getAccountById(parent.sender)
+): Account | null => dataSources.accounts.getAccount(parent.sender)
 
 export const transactionRecipientResolver = (
   parent: Transaction,
   _: any,
   { dataSources }: CustomApolloContext,
-): Account | null => dataSources.accounts.getAccountById(parent.recipient)
+): Account | null => dataSources.accounts.getAccount(parent.recipient)

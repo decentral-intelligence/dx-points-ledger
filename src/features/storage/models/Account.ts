@@ -5,7 +5,8 @@ export type AccountId = string
 
 export interface AccountData {
   _id: string
-  email: string
+  alias?: string
+  publicKey: string
   isActive: boolean
   balance: number
   role: AccountRole
@@ -13,7 +14,8 @@ export interface AccountData {
 
 export class Account implements Entity {
   public _id = ''
-  public email = ''
+  public publicKey = ''
+  public alias = ''
   public isActive = false
   public balance = 0
   public role = AccountRole.Common

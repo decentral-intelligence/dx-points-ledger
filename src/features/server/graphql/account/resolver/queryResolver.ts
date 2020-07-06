@@ -4,14 +4,10 @@ const accounts = (_: any, __: any, context: CustomApolloContext) => {
   return context.dataSources.accounts.getAllAccounts()
 }
 
-const getAccountByEmail = (_: any, { email }: any, { dataSources }: CustomApolloContext) =>
-  dataSources.accounts.getAccount(email)
-
-const getAccountById = (_: any, { id }: any, { dataSources }: CustomApolloContext) =>
-  dataSources.accounts.getAccountById(id)
+const account = (_: any, { id }: any, { dataSources }: CustomApolloContext) =>
+  dataSources.accounts.getAccount(id)
 
 export const queryResolver = {
   accounts,
-  getAccountByEmail,
-  getAccountById,
+  account,
 }

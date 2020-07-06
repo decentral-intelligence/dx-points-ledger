@@ -2,11 +2,13 @@ import { DataSource } from 'apollo-datasource'
 import DocumentStore from 'orbit-db-docstore'
 import { Account } from './models/Account'
 import { logger } from '../@common/logger'
-import { createEntityIdForUniques } from './utils/createEntityIdForUniques'
 import { AccountRole } from './types/AccountRole'
+import { createHash } from 'crypto'
+import { encodeReedSolomon } from '../security/encodeReedSolomon'
 
 interface CreateAccountArgs {
-  email: string
+  publicKey: string
+  alias?: string
   role: AccountRole
 }
 
@@ -19,13 +21,20 @@ export class AccountService extends DataSource {
     return this.accounts.drop()
   }
 
+  public static getAccountIdFromPublicKey(publicKey: string): string {
+    const hash = createHash('sha256')
+    hash.update(publicKey)
+    const digest = hash.digest('hex')
+    return encodeReedSolomon('XPOINTZ', digest)
+  }
+
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
-    const { email } = accountArgs
-    const id = createEntityIdForUniques(email)
+    const { publicKey } = accountArgs
+    const id = AccountService.getAccountIdFromPublicKey(publicKey)
 
     const foundAccounts = await this.accounts.get(id)
     if (foundAccounts.length > 0) {
-      throw new Error(`Account [${email}] already exists`)
+      throw new Error(`Account [${id}] already exists`)
     }
 
     const newAccount = Account.readFromJson({
@@ -41,17 +50,12 @@ export class AccountService extends DataSource {
     return newAccount
   }
 
-  public getAccountById(id: string): Account | null {
+  public getAccount(id: string): Account | null {
     const accounts = this.accounts.get(id)
     if (accounts.length > 0) {
       return Account.readFromJson(accounts[0])
     }
     return null
-  }
-
-  public getAccount(email: string): Account | null {
-    const id = createEntityIdForUniques(email)
-    return this.getAccountById(id)
   }
 
   public getAllAccounts(): Account[] {

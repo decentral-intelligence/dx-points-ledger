@@ -4,25 +4,23 @@ enum AccountRole {
 }
 
 input AccountInput {
-  email: String!
+  publicKey: String!
+  alias: String
   role: AccountRole!
 }
 
 type Account {
   _id: String!
-  email: String!
+  publicKey: String!
+  alias: String
   balance: Int!
   isActive: Boolean!
   role: AccountRole!
-  """
-  the list of Transactions of this Account
-  """
   transactions: [Transaction]
 }
 
 extend type Query {
-  getAccountByEmail(email: String!): Account
-  getAccountById(id: ID!): Account
+  account(id: ID!): Account
   accounts: [Account]
 }
 

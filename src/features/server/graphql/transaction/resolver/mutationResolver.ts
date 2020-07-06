@@ -9,8 +9,8 @@ const airdropPoints = async (
 ): Promise<any> => {
   try {
     const { accounts, transactions } = dataSources
-    const sender = accounts.getAccountById(args.sender)
-    const recipient = accounts.getAccountById(args.recipient)
+    const sender = accounts.getAccount(args.sender)
+    const recipient = accounts.getAccount(args.recipient)
     if (sender && recipient) {
       return await transactions.airdrop({
         ...args,

@@ -7,8 +7,8 @@ const createAccount = (
   { dataSources }: CustomApolloContext,
 ): Promise<any> => {
   logger.debug(`Adding account ${JSON.stringify(args)}`)
-  const { email, role } = args
-  return dataSources.accounts.createAccount({ email, role })
+  const { alias, publicKey, role } = args
+  return dataSources.accounts.createAccount({ publicKey, role, alias })
 }
 
 export const mutationResolver = {
