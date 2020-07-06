@@ -1,14 +1,11 @@
-import { provideTransactionService } from '../../../../storage/utils/provideTransactionService'
 import { Transaction } from '../../../../storage/models/Transaction'
 import { Account } from '../../../../storage/models/Account'
-
-interface Context {}
+import { CustomApolloContext } from '../../types/CustomApolloContext'
 
 export const accountTransactionsResolver = (
   parent: Account,
   args: any,
-  context: any,
+  { dataSources }: CustomApolloContext,
 ): Transaction[] => {
-  console.log('accountTransactionsResolver', context)
-  return provideTransactionService().getTransactionsOfAccount(parent._id)
+  return dataSources.transactions.getTransactionsOfAccount(parent._id)
 }

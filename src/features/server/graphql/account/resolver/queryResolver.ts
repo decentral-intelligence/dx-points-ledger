@@ -1,7 +1,17 @@
-import { provideAccountService } from '../../../../storage/utils'
+import { CustomApolloContext } from '../../types/CustomApolloContext'
+
+const accounts = (_: any, __: any, context: CustomApolloContext) => {
+  return context.dataSources.accounts.getAllAccounts()
+}
+
+const getAccountByEmail = (_: any, { email }: any, { dataSources }: CustomApolloContext) =>
+  dataSources.accounts.getAccount(email)
+
+const getAccountById = (_: any, { id }: any, { dataSources }: CustomApolloContext) =>
+  dataSources.accounts.getAccountById(id)
 
 export const queryResolver = {
-  accounts: () => provideAccountService().getAllAccounts(),
-  getAccountByEmail: (parent: any, { email }: any) => provideAccountService().getAccount(email),
-  getAccountById: (parent: any, { id }: any) => provideAccountService().getAccountById(id),
+  accounts,
+  getAccountByEmail,
+  getAccountById,
 }

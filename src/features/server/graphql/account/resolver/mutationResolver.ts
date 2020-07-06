@@ -1,10 +1,16 @@
 import { logger } from '../../../../@common/logger'
-import { provideAccountService } from '../../../../storage/utils'
+import { CustomApolloContext } from '../../types/CustomApolloContext'
+
+const createAccount = (
+  parent: any,
+  { args }: any,
+  { dataSources }: CustomApolloContext,
+): Promise<any> => {
+  logger.debug(`Adding account ${JSON.stringify(args)}`)
+  const { email, role } = args
+  return dataSources.accounts.createAccount({ email, role })
+}
 
 export const mutationResolver = {
-  createAccount: (parent: any, { args }: any): Promise<any> => {
-    logger.debug(`Adding account ${JSON.stringify(args)}`)
-    const { email, role } = args
-    return provideAccountService().createAccount({ email, role })
-  },
+  createAccount,
 }

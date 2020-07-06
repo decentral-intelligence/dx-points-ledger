@@ -1,11 +1,15 @@
-import { provideAccountService } from '../../../../storage/utils'
 import { Transaction } from '../../../../storage/models/Transaction'
 import { Account } from '../../../../storage/models/Account'
+import { CustomApolloContext } from '../../types/CustomApolloContext'
 
-export const transactionSenderResolver = (parent: Transaction): Account | null => {
-  return provideAccountService().getAccountById(parent.sender)
-}
+export const transactionSenderResolver = (
+  parent: Transaction,
+  _: any,
+  { dataSources }: CustomApolloContext,
+): Account | null => dataSources.accounts.getAccountById(parent.sender)
 
-export const transactionRecipientResolver = (parent: Transaction): Account | null => {
-  return provideAccountService().getAccountById(parent.recipient)
-}
+export const transactionRecipientResolver = (
+  parent: Transaction,
+  _: any,
+  { dataSources }: CustomApolloContext,
+): Account | null => dataSources.accounts.getAccountById(parent.recipient)
