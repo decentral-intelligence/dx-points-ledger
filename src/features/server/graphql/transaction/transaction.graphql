@@ -10,7 +10,7 @@ input AirdropInput {
   sender: String!
   recipient: String!
   amount: Int!
-  reason: String
+  message: String
 }
 
 extend type Mutation {

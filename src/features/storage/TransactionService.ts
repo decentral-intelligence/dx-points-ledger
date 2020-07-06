@@ -5,11 +5,12 @@ import { Account, AccountId } from './models/Account'
 import { AccountRole } from './types/AccountRole'
 import { NotAllowedError } from '../../types/exceptions/NotAllowedError'
 
-export interface AirdropArgs {
+export interface TransactionArgs {
   sender: Account
   recipient: Account
   amount: number
-  reason?: string
+  message?: string
+  signature: string
 }
 
 export class TransactionService extends DataSource {
@@ -43,21 +44,52 @@ export class TransactionService extends DataSource {
   }
 
   /**
-   * Grants an account an arbitrary amount of points
+   * Grants an account an arbitrary amount of points (make them appear from nowhere)
    * The sender must be of AccountRole.Admin, otherwise operation is not permitted
    * @param args The Arguments
    * @return The hash/id of created transaction
    */
-  public async airdrop(args: AirdropArgs): Promise<TransactionId> {
+  public async airdrop(args: TransactionArgs): Promise<TransactionId> {
     if (!args.sender?.isOfRole(AccountRole.Admin)) {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
+
+    // TODO: verify signature!
 
     const transaction = {
       sender: args.sender._id,
       recipient: args.recipient._id,
       amount: args.amount,
-      message: args.reason,
+      message: args.message,
+      signature: args.signature,
+      timestamp: Date.now(),
+    }
+
+    return this.transactions.add(transaction)
+  }
+
+  /**
+   * Transfers an amount from one account to another
+   * @param args The Arguments
+   * @return The hash/id of created transaction
+   */
+  public async transfer(args: TransactionArgs): Promise<TransactionId> {
+    // 1 - validation
+    // check senders balance
+    // check timeframe (not here yet)
+    // verify signature
+    // verify tx with same signature
+
+    // 2 - commit
+    // add transaction
+    // update balances
+
+    const transaction = {
+      sender: args.sender._id,
+      recipient: args.recipient._id,
+      amount: args.amount,
+      message: args.message,
+      signature: args.signature,
       timestamp: Date.now(),
     }
 
