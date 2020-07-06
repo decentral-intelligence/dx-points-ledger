@@ -4,6 +4,10 @@ import { DataSource } from 'apollo-datasource'
 import { Account, AccountId } from './models/Account'
 import { AccountRole } from './types/AccountRole'
 import { NotAllowedError } from '../../types/exceptions/NotAllowedError'
+import { Seconds } from './utils/constants'
+import { generateHash } from '../security/generateHash'
+import { logger } from '../@common/logger'
+import { TransactionData } from './models/TransactionData'
 
 export interface TransactionArgs {
   sender: Account
@@ -14,7 +18,7 @@ export interface TransactionArgs {
 }
 
 export class TransactionService extends DataSource {
-  constructor(private transactions: EventStore<Transaction>) {
+  constructor(private transactions: EventStore<TransactionData>) {
     super()
   }
 
@@ -44,36 +48,66 @@ export class TransactionService extends DataSource {
   }
 
   /**
+   * Enqueues an incoming transaction, i.e. holds back a transaction for a small amount of time,
+   * thus reducing risk of replay attacks
+   * @param transactionData The transaction data object
+   */
+  // TODO: make testable
+  private enqueueTransaction(transactionData: TransactionData): void {
+    setTimeout(async () => {
+      const doubledTx = this.transactions
+        .iterator({ limit: 25 })
+        .collect()
+        .filter(({ payload: { value } }) => value.hash === transactionData.hash)
+      if (doubledTx.length === 0) {
+        await this.transactions.add(transactionData)
+      } else {
+        logger.error(`Discarding already existing transaction with hash: ${transactionData.hash}`)
+      }
+    }, 5 * Seconds)
+  }
+
+  /**
    * Grants an account an arbitrary amount of points (make them appear from nowhere)
    * The sender must be of AccountRole.Admin, otherwise operation is not permitted
    * @param args The Arguments
-   * @return The hash/id of created transaction
    */
-  public async airdrop(args: TransactionArgs): Promise<TransactionId> {
+  public airdrop(args: TransactionArgs): void {
     if (!args.sender?.isOfRole(AccountRole.Admin)) {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
 
     // TODO: verify signature!
 
-    const transaction = {
-      sender: args.sender._id,
-      recipient: args.recipient._id,
-      amount: args.amount,
-      message: args.message,
-      signature: args.signature,
-      timestamp: Date.now(),
+    const transactionData = TransactionService.createTransactionData(args)
+    this.enqueueTransaction(transactionData)
+  }
+
+  private static createTransactionData(txArgs: TransactionArgs): TransactionData {
+    let transactionData = {
+      sender: txArgs.sender._id,
+      recipient: txArgs.recipient._id,
+      amount: txArgs.amount,
+      message: txArgs.message,
+      signature: txArgs.signature,
     }
 
-    return this.transactions.add(transaction)
+    const hash = generateHash({
+      message: JSON.stringify(transactionData),
+    })
+
+    return {
+      ...transactionData,
+      hash,
+      timestamp: Date.now(),
+    }
   }
 
   /**
    * Transfers an amount from one account to another
    * @param args The Arguments
-   * @return The hash/id of created transaction
    */
-  public async transfer(args: TransactionArgs): Promise<TransactionId> {
+  public async transfer(args: TransactionArgs): Promise<void> {
     // 1 - validation
     // check senders balance
     // check timeframe (not here yet)
@@ -84,15 +118,7 @@ export class TransactionService extends DataSource {
     // add transaction
     // update balances
 
-    const transaction = {
-      sender: args.sender._id,
-      recipient: args.recipient._id,
-      amount: args.amount,
-      message: args.message,
-      signature: args.signature,
-      timestamp: Date.now(),
-    }
-
-    return this.transactions.add(transaction)
+    const transactionData = TransactionService.createTransactionData(args)
+    this.enqueueTransaction(transactionData)
   }
 }

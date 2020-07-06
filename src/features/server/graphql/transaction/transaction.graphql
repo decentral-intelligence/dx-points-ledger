@@ -14,5 +14,5 @@ input AirdropInput {
 }
 
 extend type Mutation {
-  airdropPoints(args: AirdropInput!): String
+  airdropPoints(args: AirdropInput!): Boolean
 }
