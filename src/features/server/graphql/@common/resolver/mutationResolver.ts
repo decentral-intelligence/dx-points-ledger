@@ -1,9 +1,10 @@
-import { provideAccountService, provideTransactionService } from '../../../../storage/utils'
+import {CustomApolloContext} from '../../types/CustomApolloContext';
 
 export const mutationResolver = {
-  dropAll: async (parent: any, { args }: any): Promise<any> => {
-    console.log('Dropping all!', JSON.stringify(args))
-    await provideTransactionService().drop()
-    await provideAccountService().drop()
-  },
+    dropAll: async (_: any, __: any, {dataSources}: CustomApolloContext): Promise<any> => {
+        await Promise.all([
+            dataSources.accounts.drop(),
+            dataSources.transactions.drop()
+        ])
+    }
 }
