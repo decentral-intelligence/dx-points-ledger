@@ -1,3 +1,3 @@
 export { provideTransactionService } from './provideTransactionService'
 export { provideAccountService } from './provideAccountService'
-export { createEntityIdForUniques } from './createEntityIdForUniques'
+export { OperationsQueue } from './OperationsQueue'

@@ -38,6 +38,6 @@ describe('signing tests', () => {
 
     const verified = verifier.verify(publicKey, recreatedSignature)
 
-    expect(verified).toBeTruthy
+    expect(verified).toBeTruthy()
   })
 })

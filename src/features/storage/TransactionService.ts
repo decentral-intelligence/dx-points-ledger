@@ -8,6 +8,7 @@ import { Seconds } from './utils/constants'
 import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
+import { OrbitDbService } from './OrbitDbService'
 
 export interface TransactionArgs {
   sender: Account
@@ -18,8 +19,11 @@ export interface TransactionArgs {
 }
 
 export class TransactionService extends DataSource {
-  constructor(private transactions: EventStore<TransactionData>) {
+  private transactions: EventStore<TransactionData>
+
+  constructor(private orbitDbService: OrbitDbService) {
     super()
+    this.transactions = orbitDbService.transactions
   }
 
   public async drop(): Promise<void> {
@@ -49,27 +53,37 @@ export class TransactionService extends DataSource {
 
   /**
    * Enqueues an incoming transaction, i.e. holds back a transaction for a small amount of time,
-   * thus reducing risk of replay attacks
+   * thus reducing risk of doubled transactions, i.e. caused by replay attacks
    * @param transactionData The transaction data object
    */
-  // TODO: make testable
   private enqueueTransaction(transactionData: TransactionData): void {
-    setTimeout(async () => {
-      const doubledTx = this.transactions
-        .iterator({ limit: 25 })
-        .collect()
-        .filter(
-          ({ payload: { value } }) =>
-            value.hash === transactionData.hash &&
-            transactionData.timestamp - value.timestamp < 5 * Seconds,
-        )
-      if (doubledTx.length === 0) {
-        const id = await this.transactions.add(transactionData)
-        logger.info(`Transaction successfully recorded: ${id}`)
-      } else {
-        logger.error(`Discarding already existing transaction with hash: ${transactionData.hash}`)
+    const ProcessingDelay = 5 * Seconds
+    this.orbitDbService.operationsQueue.enqueue(async () => {
+      const isNew = this.isNewTransaction(transactionData, ProcessingDelay)
+      if (!isNew) {
+        logger.warn(`Discarding already existing transaction with hash: ${transactionData.hash}`)
+        return
       }
-    }, 5 * Seconds)
+      try {
+        const id = await this.transactions.add(transactionData)
+        logger.info(`Transaction [${transactionData.hash}] successfully recorded - id: ${id}`)
+      } catch (e) {
+        logger.error(e)
+      }
+    }, ProcessingDelay)
+  }
+
+  private isNewTransaction(transactionData: TransactionData, allowedTimeframe: number): boolean {
+    const doubledTx = this.transactions
+      .iterator({ limit: 25 })
+      .collect()
+      .filter(
+        ({ payload: { value } }) =>
+          value.hash === transactionData.hash &&
+          transactionData.timestamp - value.timestamp < allowedTimeframe,
+      )
+
+    return doubledTx.length === 0
   }
 
   /**
@@ -86,7 +100,6 @@ export class TransactionService extends DataSource {
 
     const transactionData = TransactionService.createTransactionData(args)
     this.enqueueTransaction(transactionData)
-    // this.transactions.add(transactionData);
   }
 
   private static createTransactionData(txArgs: TransactionArgs): TransactionData {

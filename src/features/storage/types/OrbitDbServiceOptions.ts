@@ -1,5 +1,7 @@
+import { IpfsService } from '../IpfsService'
+
 export interface OrbitDbServiceOptions {
-  ipfs: any
+  ipfsService: IpfsService
   transactionsDatabaseAddress: string
   accountsDatabaseAddress: string
 }

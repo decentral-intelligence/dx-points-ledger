@@ -4,10 +4,12 @@ import { Account } from './models/Account'
 import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
 import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
-import { Seconds } from './utils/constants'
+import { OperationsQueue } from './utils'
+import { TransactionData } from './models/TransactionData'
+import { IpfsService } from './IpfsService'
 
 export class OrbitDbService {
-  get transactions(): EventStore<any> {
+  get transactions(): EventStore<TransactionData> {
     if (!this._transactions) {
       throw new Error('OrbitDB not started yet')
     }
@@ -21,9 +23,15 @@ export class OrbitDbService {
     return this._accounts
   }
 
+  get operationsQueue(): OperationsQueue {
+    return this._operationsQueue
+  }
+
+  private ipfsService: IpfsService | undefined
   private orbitdb: OrbitDB | undefined
-  private _transactions: EventStore<any> | undefined
+  private _transactions: EventStore<TransactionData> | undefined
   private _accounts: DocumentStore<Account> | undefined
+  private _operationsQueue = new OperationsQueue()
 
   private async initAccounts(address: string): Promise<void> {
     logger.info(`Loading database...`)
@@ -44,9 +52,10 @@ export class OrbitDbService {
   }
 
   public async start(options: OrbitDbServiceOptions): Promise<void> {
-    const { accountsDatabaseAddress, ipfs, transactionsDatabaseAddress } = options
+    const { accountsDatabaseAddress, ipfsService, transactionsDatabaseAddress } = options
     logger.info('Starting OrbitDb...')
-    this.orbitdb = await OrbitDB.createInstance(ipfs)
+    this.ipfsService = ipfsService
+    this.orbitdb = await OrbitDB.createInstance(ipfsService.ipfsNode)
     logger.info(`Orbit Database instantiated ${JSON.stringify(this.orbitdb?.id)}`)
     await Promise.all([
       this.initAccounts(accountsDatabaseAddress),
@@ -55,6 +64,10 @@ export class OrbitDbService {
   }
 
   public async stop(): Promise<void> {
+    await this._operationsQueue.finish()
+    logger.info('Closing databases...')
+    await Promise.all([this.transactions.close(), this.accounts.close()])
+    await this.ipfsService?.stop()
     logger.info('Stopping OrbitDB...this may take a while - be patient')
     await this.orbitdb?.stop()
   }

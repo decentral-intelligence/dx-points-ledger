@@ -5,6 +5,7 @@ import { logger } from '../@common/logger'
 import { AccountRole } from './types/AccountRole'
 import { createHash } from 'crypto'
 import { encodeReedSolomon } from '../security/encodeReedSolomon'
+import { OrbitDbService } from './OrbitDbService'
 
 interface CreateAccountArgs {
   publicKey: string
@@ -13,8 +14,11 @@ interface CreateAccountArgs {
 }
 
 export class AccountService extends DataSource {
-  constructor(private accounts: DocumentStore<Account>) {
+  private accounts: DocumentStore<Account>
+
+  constructor(orbitDbService: OrbitDbService) {
     super()
+    this.accounts = orbitDbService.accounts
   }
 
   public async drop(): Promise<void> {
