@@ -6,7 +6,7 @@ import { config } from './config'
 
 async function shutdown() {
   logger.info('Shutting down')
-  await Promise.all([server.stop(), orbitDbService.stop()])
+  await orbitDbService.stop()
   logger.info('Done')
 }
 
