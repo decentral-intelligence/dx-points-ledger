@@ -122,6 +122,7 @@ dist
 
 
 # more
+ipfs
 orbitdb
 build
 *.pem

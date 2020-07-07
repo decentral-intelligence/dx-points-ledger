@@ -24,6 +24,28 @@ const config = convict({
       arg: 'db-accounts',
     },
   },
+  ipfs: {
+    repo: {
+      format: String,
+      default: null,
+    },
+    silent: {
+      format: Boolean,
+      default: true,
+    },
+    config: {
+      Addresses: {
+        Swarm: {
+          format: Array,
+          default: ['/ip4/0.0.0.0/tcp/4011', '/ip4/0.0.0.0/tcp/4012/ws'],
+        },
+      },
+      Bootstrap: {
+        format: Array,
+        default: [],
+      },
+    },
+  },
 })
 
 const env = config.get('env')

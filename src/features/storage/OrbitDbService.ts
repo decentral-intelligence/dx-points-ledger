@@ -4,6 +4,7 @@ import { Account } from './models/Account'
 import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
 import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
+import { Seconds } from './utils/constants'
 
 export class OrbitDbService {
   get transactions(): EventStore<any> {
@@ -54,7 +55,7 @@ export class OrbitDbService {
   }
 
   public async stop(): Promise<void> {
-    logger.info('Stopping OrbitDB...')
+    logger.info('Stopping OrbitDB...this may take a while - be patient')
     await this.orbitdb?.stop()
   }
 }

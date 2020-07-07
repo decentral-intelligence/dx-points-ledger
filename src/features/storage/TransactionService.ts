@@ -58,9 +58,14 @@ export class TransactionService extends DataSource {
       const doubledTx = this.transactions
         .iterator({ limit: 25 })
         .collect()
-        .filter(({ payload: { value } }) => value.hash === transactionData.hash)
+        .filter(
+          ({ payload: { value } }) =>
+            value.hash === transactionData.hash &&
+            transactionData.timestamp - value.timestamp < 5 * Seconds,
+        )
       if (doubledTx.length === 0) {
-        await this.transactions.add(transactionData)
+        const id = await this.transactions.add(transactionData)
+        logger.info(`Transaction successfully recorded: ${id}`)
       } else {
         logger.error(`Discarding already existing transaction with hash: ${transactionData.hash}`)
       }
@@ -81,6 +86,7 @@ export class TransactionService extends DataSource {
 
     const transactionData = TransactionService.createTransactionData(args)
     this.enqueueTransaction(transactionData)
+    // this.transactions.add(transactionData);
   }
 
   private static createTransactionData(txArgs: TransactionArgs): TransactionData {

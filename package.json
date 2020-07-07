@@ -65,6 +65,7 @@
     "graphql": "^14.6.0",
     "graphql-tools": "^6.0.9",
     "inquirer": "^7.3.0",
+    "ipfs": "^0.47.0",
     "ipfs-http-client": "^44.3.0",
     "node-graceful-shutdown": "^1.0.3",
     "orbit-db": "^0.24.2",
