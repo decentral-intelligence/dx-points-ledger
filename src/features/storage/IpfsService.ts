@@ -13,7 +13,7 @@ export class IpfsService {
     logger.info('Booting IPFS...')
     logger.debug(JSON.stringify(config))
     this._ipfs = await Ipfs.create(config)
-    const id = await this._ipfs.id()
-    logger.info(`Ipfs started - Id: ${id}`)
+    const identity = await this._ipfs.id()
+    logger.info(`Ipfs started - Id: ${identity.id}`)
   }
 }
