@@ -15,5 +15,10 @@
         "/ip4/179.225.159.117/tcp/4001/p2p/QmeHrccq46wUWjfw6Mf6Lszrs3nM1fAMJmGM1kME5J3tMK"
       ]
     }
+  },
+  "verifySignatures": true,
+  "transactionPool": {
+    "limit": 10,
+    "timeout": 5000
   }
 }

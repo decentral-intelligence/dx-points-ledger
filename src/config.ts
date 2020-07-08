@@ -46,6 +46,29 @@ const config = convict({
       },
     },
   },
+  verifySignatures: {
+    doc: 'Determine if signatures are verified. Do not disable in production!',
+    format: Boolean,
+    env: 'VERIFY_SIGNATURES',
+    arg: 'verify-signatures',
+    default: true,
+  },
+  transactionPool: {
+    limit: {
+      doc: 'Amount of transactions kept in memory before persisted',
+      format: Number,
+      env: 'POOL_LIMIT',
+      arg: 'pool-limit',
+      default: 20,
+    },
+    timeout: {
+      doc: 'Duration in milliseconds for transactions kept in memory before persisted',
+      format: Number,
+      env: 'POOL_TIMEOUT',
+      arg: 'pool-timeout',
+      default: 5000,
+    },
+  },
 })
 
 const env = config.get('env')

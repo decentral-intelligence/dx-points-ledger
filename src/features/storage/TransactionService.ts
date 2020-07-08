@@ -22,7 +22,8 @@ export interface TransactionArgs {
 interface TransactionServiceOptions {
   orbitDbService: OrbitDbService
   poolTimeout: number
-  poolTxLimit: number
+  poolLimit: number
+  verifySignatures: boolean
 }
 
 export class TransactionService extends DataSource {
@@ -35,7 +36,7 @@ export class TransactionService extends DataSource {
     this.transactionsPoolSingleton = options.orbitDbService.transactionsPool
     if (!this.transactionsPoolSingleton.isInitialized) {
       this.transactionsPoolSingleton.initialize({
-        limit: options.poolTxLimit,
+        limit: options.poolLimit,
         timeout: options.poolTimeout,
         action: this.addTransactions.bind(this),
       })
@@ -109,7 +110,10 @@ export class TransactionService extends DataSource {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
 
-    // TODO: verify signature!
+    if (this.options.verifySignatures) {
+      // TODO: verify signature!
+    }
+
     const transactionData = TransactionService.createTransactionData(args)
     this.transactionsPoolSingleton.addEntry(transactionData)
   }
@@ -148,6 +152,10 @@ export class TransactionService extends DataSource {
     // 2 - commit
     // add transaction
     // update balances
+
+    if (this.options.verifySignatures) {
+      // TODO: verify signature!
+    }
 
     const transactionData = TransactionService.createTransactionData(args)
     // this.enqueueTransaction(transactionData)

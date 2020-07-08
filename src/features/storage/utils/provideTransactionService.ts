@@ -1,9 +1,10 @@
 import { orbitDbService, TransactionService } from '../index'
-import { Seconds } from './constants'
+import { config } from '../../../config'
 
 export const provideTransactionService = (): TransactionService =>
   new TransactionService({
     orbitDbService,
-    poolTimeout: 5 * Seconds,
-    poolTxLimit: 10,
+    poolTimeout: config.get('transactionPool.timeout'),
+    poolLimit: config.get('transactionPool.limit'),
+    verifySignatures: config.get('verifySignatures'),
   })
