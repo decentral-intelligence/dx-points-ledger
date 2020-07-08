@@ -12,7 +12,7 @@ const DefaultConfig = {
   debug: isDevelopment,
 }
 
-export class Server {
+export class GraphQlServer {
   private server: ApolloServer | undefined
 
   public async start(): Promise<void> {
@@ -32,6 +32,8 @@ export class Server {
 
   public async stop(): Promise<void> {
     logger.info(`Stopping Apollo Server...`)
-    await this.server?.stop()
+    return Promise.resolve()
+    // Don't use until https://github.com/apollographql/apollo-server/issues/4097 is solved
+    // await this.server?.stop()
   }
 }

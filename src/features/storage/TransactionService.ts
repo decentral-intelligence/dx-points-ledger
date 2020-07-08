@@ -4,11 +4,12 @@ import { DataSource } from 'apollo-datasource'
 import { Account, AccountId } from './models/Account'
 import { AccountRole } from './types/AccountRole'
 import { NotAllowedError } from '../../types/exceptions/NotAllowedError'
-import { Seconds } from './utils/constants'
 import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
 import { OrbitDbService } from './OrbitDbService'
+import { EntryPool } from './utils/EntryPool'
+import { Seconds } from './utils/constants'
 
 export interface TransactionArgs {
   sender: Account
@@ -18,12 +19,27 @@ export interface TransactionArgs {
   signature: string
 }
 
+interface TransactionServiceOptions {
+  orbitDbService: OrbitDbService
+  poolTimeout: number
+  poolTxLimit: number
+}
+
 export class TransactionService extends DataSource {
   private transactions: EventStore<TransactionData>
+  private transactionsPoolSingleton: EntryPool<TransactionData>
 
-  constructor(private orbitDbService: OrbitDbService) {
+  constructor(private options: TransactionServiceOptions) {
     super()
-    this.transactions = orbitDbService.transactions
+    this.transactions = options.orbitDbService.transactions
+    this.transactionsPoolSingleton = options.orbitDbService.transactionsPool
+    if (!this.transactionsPoolSingleton.isInitialized) {
+      this.transactionsPoolSingleton.initialize({
+        limit: options.poolTxLimit,
+        timeout: options.poolTimeout,
+        action: this.addTransactions.bind(this),
+      })
+    }
   }
 
   public async drop(): Promise<void> {
@@ -51,26 +67,24 @@ export class TransactionService extends DataSource {
     }
   }
 
-  /**
-   * Enqueues an incoming transaction, i.e. holds back a transaction for a small amount of time,
-   * thus reducing risk of doubled transactions, i.e. caused by replay attacks
-   * @param transactionData The transaction data object
-   */
-  private enqueueTransaction(transactionData: TransactionData): void {
-    const ProcessingDelay = 5 * Seconds
-    this.orbitDbService.operationsQueue.enqueue(async () => {
-      const isNew = this.isNewTransaction(transactionData, ProcessingDelay)
-      if (!isNew) {
-        logger.warn(`Discarding already existing transaction with hash: ${transactionData.hash}`)
-        return
-      }
-      try {
-        const id = await this.transactions.add(transactionData)
-        logger.info(`Transaction [${transactionData.hash}] successfully recorded - id: ${id}`)
-      } catch (e) {
-        logger.error(e)
-      }
-    }, ProcessingDelay)
+  private async addTransactions(transactions: TransactionData[]): Promise<void> {
+    for (const t of transactions) {
+      await this.addSingleTransaction(t)
+    }
+  }
+
+  private async addSingleTransaction(transactionData: TransactionData): Promise<void> {
+    let isNew = await this.isNewTransaction(transactionData, this.options.poolTimeout + 1 * Seconds)
+    if (!isNew) {
+      logger.warn(`Discarding already existing transaction with hash: ${transactionData.hash}`)
+      return
+    }
+    try {
+      const id = await this.transactions.add(transactionData)
+      logger.info(`Transaction [${transactionData.hash}] successfully recorded - id: ${id}`)
+    } catch (e) {
+      logger.error(e)
+    }
   }
 
   private isNewTransaction(transactionData: TransactionData, allowedTimeframe: number): boolean {
@@ -82,7 +96,6 @@ export class TransactionService extends DataSource {
           value.hash === transactionData.hash &&
           transactionData.timestamp - value.timestamp < allowedTimeframe,
       )
-
     return doubledTx.length === 0
   }
 
@@ -97,9 +110,8 @@ export class TransactionService extends DataSource {
     }
 
     // TODO: verify signature!
-
     const transactionData = TransactionService.createTransactionData(args)
-    this.enqueueTransaction(transactionData)
+    this.transactionsPoolSingleton.addEntry(transactionData)
   }
 
   private static createTransactionData(txArgs: TransactionArgs): TransactionData {
@@ -138,6 +150,6 @@ export class TransactionService extends DataSource {
     // update balances
 
     const transactionData = TransactionService.createTransactionData(args)
-    this.enqueueTransaction(transactionData)
+    // this.enqueueTransaction(transactionData)
   }
 }

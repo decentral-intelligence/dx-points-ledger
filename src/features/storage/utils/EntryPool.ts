@@ -30,50 +30,72 @@ export class EntryPool<T> {
   private _entries = new Array<T>()
   private timeoutHandler: NodeJS.Timeout | null = null
   private emitter = new EventEmitter()
-  private hasFinished = false
+  private isFinishing = false
+  private options: MempoolOptions<T> | null = null
 
-  constructor(private options: MempoolOptions<T>) {}
+  public get isInitialized(): boolean {
+    return this.options !== null
+  }
 
-  private eventuallyStartTimeout(): void {
-    if (this.timeoutHandler === null) {
-      this.timeoutHandler = setTimeout(this.onDispatch.bind(this), this.options.timeout)
+  public initialize(options: MempoolOptions<T>) {
+    if (this.options !== null) {
+      throw new Error('EntryPool already initialized')
     }
+    this.options = options
   }
 
   public addEntry(entry: T): void {
-    if (this.hasFinished) {
-      logger.warn('Mempool is closing. Entry ignored')
+    if (this.options === null) {
+      throw new Error('EntryPool not initialized yet')
+    }
+
+    if (this.isFinishing) {
+      logger.warn('EntryPool is finishing. Entry ignored')
       return
     }
 
-    this.eventuallyStartTimeout()
+    if (this.timeoutHandler === null) {
+      this.timeoutHandler = setTimeout(this.dispatch.bind(this), this.options?.timeout)
+    }
 
     this._entries.push(entry)
     if (this._entries.length === this.options.limit) {
-      this.onDispatch()
+      this.dispatch()
     }
   }
 
-  public onDispatch(): void {
+  public dispatch(): void {
+    if (this.options === null) {
+      throw new Error('EntryPool not initialized yet')
+    }
+
     if (this.timeoutHandler !== null) {
       clearTimeout(this.timeoutHandler)
       this.timeoutHandler = null
     }
 
     if (this._entries.length > 0) {
-      this.options.action([...this._entries])
-      this._entries = []
+      this.options.action([...this._entries]).catch((e) => {
+        logger.error(`Pool Action failed: ${e}`)
+      })
       this.emitter.emit('dispatched')
+      this._entries = []
     }
   }
 
   /**
-   * Waits until last items were dispatched
+   * Gracefully finishes the entry pool, i.e. eventually waits for pending entries
    * */
-  public finish(): Promise<void> {
-    this.hasFinished = true
-    return new Promise<void>((resolve) => {
-      this.emitter.once('dispatched', resolve)
-    })
+  public async finish(): Promise<void> {
+    this.isFinishing = true
+    const promise =
+      this.timeoutHandler === null
+        ? await Promise.resolve()
+        : new Promise<void>((resolve) => {
+            logger.info('Waiting for pending entries...')
+            this.emitter.once('dispatched', resolve)
+          })
+    await promise
+    this.options = null
   }
 }

@@ -4,11 +4,15 @@ import { Account } from './models/Account'
 import DocumentStore from 'orbit-db-docstore'
 import EventStore from 'orbit-db-eventstore'
 import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
-import { OperationsQueue } from './utils'
 import { TransactionData } from './models/TransactionData'
 import { IpfsService } from './IpfsService'
+import { EntryPool } from './utils'
 
 export class OrbitDbService {
+  get transactionsPool(): EntryPool<TransactionData> {
+    return this._transactionsPool
+  }
+
   get transactions(): EventStore<TransactionData> {
     if (!this._transactions) {
       throw new Error('OrbitDB not started yet')
@@ -23,15 +27,11 @@ export class OrbitDbService {
     return this._accounts
   }
 
-  get operationsQueue(): OperationsQueue {
-    return this._operationsQueue
-  }
-
   private ipfsService: IpfsService | undefined
   private orbitdb: OrbitDB | undefined
   private _transactions: EventStore<TransactionData> | undefined
+  private _transactionsPool = new EntryPool<TransactionData>()
   private _accounts: DocumentStore<Account> | undefined
-  private _operationsQueue = new OperationsQueue()
 
   private async initAccounts(address: string): Promise<void> {
     logger.info(`Loading database...`)
@@ -64,8 +64,8 @@ export class OrbitDbService {
   }
 
   public async stop(): Promise<void> {
-    await this._operationsQueue.finish()
     logger.info('Stopping OrbitDB...')
+    await this._transactionsPool.finish()
     await this.orbitdb?.stop()
     await this.ipfsService?.stop()
   }

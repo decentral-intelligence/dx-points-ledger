@@ -1,2 +1,3 @@
-import { Server } from './Server'
-export const server = new Server()
+import { GraphQlServer } from './GraphQlServer'
+
+export const graphQlServer = new GraphQlServer()

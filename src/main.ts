@@ -1,11 +1,12 @@
 import { logger } from './features/@common/logger'
 import { IpfsService, orbitDbService } from './features/storage'
-import { server } from './features/server'
+import { graphQlServer } from './features/server'
 import { onShutdown } from 'node-graceful-shutdown'
 import { config } from './config'
 
 async function shutdown() {
   logger.info('Shutting down')
+  await graphQlServer.stop()
   await orbitDbService.stop()
   logger.info('Done')
 }
@@ -14,13 +15,12 @@ async function start() {
   logger.info('Starting XPoints Backbone')
   const ipfsService = new IpfsService()
   await ipfsService.start(config.get('ipfs'))
-
   await orbitDbService.start({
     ipfsService,
     transactionsDatabaseAddress: config.get('db.transactions'),
     accountsDatabaseAddress: config.get('db.accounts'),
   })
-  await server.start()
+  await graphQlServer.start()
 }
 
 ;(async () => {
