@@ -23,14 +23,14 @@ async function start() {
   await server.start()
 }
 
-onShutdown(shutdown)
-
-start()
-  .then(() => {
+;(async () => {
+  try {
+    onShutdown(shutdown)
+    await start()
     logger.info('System up and running fine')
-  })
-  .catch(async (e) => {
+  } catch (e) {
     logger.error(e)
     logger.error('Snap - Loading failed')
     await shutdown()
-  })
+  }
+})()

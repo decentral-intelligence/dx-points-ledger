@@ -1,18 +1,12 @@
 import PQueue from 'p-queue'
 import { logger } from '../../@common/logger'
 
-const delay = (millies: number) =>
-  new Promise((resolve) => {
-    setTimeout(() => resolve(), millies)
-  })
-
 export class OperationsQueue {
   private _pqueue = new PQueue({ concurrency: 1 })
   private _finishRequested = false
 
   public enqueue(operation: () => Promise<unknown>, processingDelay: number): void {
     if (!this._finishRequested) {
-      this._pqueue.add(() => delay(processingDelay))
       this._pqueue.add(operation)
     }
   }

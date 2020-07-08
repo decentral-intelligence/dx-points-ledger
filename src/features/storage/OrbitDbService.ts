@@ -65,10 +65,8 @@ export class OrbitDbService {
 
   public async stop(): Promise<void> {
     await this._operationsQueue.finish()
-    logger.info('Closing databases...')
-    await Promise.all([this.transactions.close(), this.accounts.close()])
-    await this.ipfsService?.stop()
-    logger.info('Stopping OrbitDB...this may take a while - be patient')
+    logger.info('Stopping OrbitDB...')
     await this.orbitdb?.stop()
+    await this.ipfsService?.stop()
   }
 }
