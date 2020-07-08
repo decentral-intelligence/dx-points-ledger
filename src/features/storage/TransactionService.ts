@@ -8,8 +8,7 @@ import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
 import { OrbitDbService } from './OrbitDbService'
-import { EntryPool } from './utils/EntryPool'
-import { Seconds } from './utils/constants'
+import { EntryPool } from './utils'
 
 export interface TransactionArgs {
   sender: Account
@@ -39,6 +38,7 @@ export class TransactionService extends DataSource {
         limit: options.poolLimit,
         timeout: options.poolTimeout,
         action: this.addTransactions.bind(this),
+        dedupeFn: (entry, otherEntry) => entry.hash === otherEntry.hash,
       })
     }
   }
@@ -75,7 +75,7 @@ export class TransactionService extends DataSource {
   }
 
   private async addSingleTransaction(transactionData: TransactionData): Promise<void> {
-    let isNew = await this.isNewTransaction(transactionData, this.options.poolTimeout + 1 * Seconds)
+    let isNew = await this.isNewTransaction(transactionData)
     if (!isNew) {
       logger.warn(`Discarding already existing transaction with hash: ${transactionData.hash}`)
       return
@@ -88,8 +88,9 @@ export class TransactionService extends DataSource {
     }
   }
 
-  private isNewTransaction(transactionData: TransactionData, allowedTimeframe: number): boolean {
-    const doubledTx = this.transactions
+  private isNewTransaction(transactionData: TransactionData): boolean {
+    const allowedTimeframe = this.options.poolTimeout
+    const identicalTransactions = this.transactions
       .iterator({ limit: 25 })
       .collect()
       .filter(
@@ -97,7 +98,7 @@ export class TransactionService extends DataSource {
           value.hash === transactionData.hash &&
           transactionData.timestamp - value.timestamp < allowedTimeframe,
       )
-    return doubledTx.length === 0
+    return identicalTransactions.length === 0
   }
 
   /**
