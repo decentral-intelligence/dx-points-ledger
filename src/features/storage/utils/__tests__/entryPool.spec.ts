@@ -39,4 +39,22 @@ describe('EntryPool', () => {
     expect(action).toBeCalledWith([1, 2, 3, 4])
     expect(pool.entries).toHaveLength(0)
   })
+
+  it('cannot add more entries, once finish is called', () => {
+    const callback = (_: number[]): Promise<void> => Promise.resolve()
+
+    const action = jest.fn(callback)
+
+    const pool = new EntryPool<number>({
+      timeout: 2 * Seconds,
+      limit: 5,
+      action,
+    })
+
+    const items = [1, 2]
+    items.forEach((n) => pool.addEntry(n))
+    pool.finish()
+    pool.addEntry(3)
+    expect(pool.entries).toEqual([1, 2])
+  })
 })
