@@ -37,5 +37,6 @@ describe('EntryPool', () => {
     await pool.finish()
 
     expect(action).toBeCalledWith([1, 2, 3, 4])
+    expect(pool.entries).toHaveLength(0)
   })
 })
