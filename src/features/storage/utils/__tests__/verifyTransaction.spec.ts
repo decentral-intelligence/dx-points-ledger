@@ -1,7 +1,9 @@
+// @ts-ignore
+import stableStringify from 'json-stable-stringify'
 import { generateKeyPairSync, verify, sign, createSign, createVerify, getCurves } from 'crypto'
 
-describe('signing tests', () => {
-  it('some experiment', () => {
+describe('verifySignature', () => {
+  it('should correctly verify a valid signature', () => {
     const { publicKey, privateKey } = generateKeyPairSync('ec', {
       namedCurve: 'sect571r1',
       publicKeyEncoding: {
@@ -19,7 +21,7 @@ describe('signing tests', () => {
     const data = {
       foo: 'bar',
     }
-    const message = Buffer.from(JSON.stringify(data))
+    const message = Buffer.from(stableStringify(data))
     const signer = createSign('sha512')
     signer.update(message)
     signer.end()

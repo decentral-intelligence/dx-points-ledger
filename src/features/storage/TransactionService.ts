@@ -111,10 +111,6 @@ export class TransactionService extends DataSource {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
 
-    if (this.options.verifySignatures) {
-      // TODO: verify signature!
-    }
-
     const transactionData = TransactionService.createTransactionData(args)
     this.transactionsPoolSingleton.addEntry(transactionData)
   }
@@ -160,5 +156,12 @@ export class TransactionService extends DataSource {
 
     const transactionData = TransactionService.createTransactionData(args)
     // this.enqueueTransaction(transactionData)
+  }
+
+  private validateSignature(transactionData: TransactionData) {
+    if (this.options.verifySignatures) {
+      // TODO: verify signature!
+      transactionData
+    }
   }
 }

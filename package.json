@@ -66,6 +66,7 @@
     "inquirer": "^7.3.0",
     "ipfs": "^0.46.0",
     "ipfs-http-client": "^44.3.0",
+    "json-stable-stringify": "^1.0.1",
     "node-graceful-shutdown": "^1.0.3",
     "orbit-db": "^0.24.2",
     "p-queue": "^6.5.0",

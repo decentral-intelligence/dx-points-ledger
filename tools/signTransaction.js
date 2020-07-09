@@ -1,13 +1,14 @@
 const { createSign } = require('crypto')
 const { readFileSync } = require('fs')
 const { prompt } = require('inquirer')
+const stringify = require('json-stable-stringify')
 
 const isAddress = (str) => /XPOINTZ-(\w{4}-){3}\w{5}/.test(str)
 
 const addressValidator = (address) => (isAddress(address) ? true : 'Not a valid account')
 
 const sign = ({ privateKey, passphrase, ...data }) => {
-  const message = Buffer.from(JSON.stringify(data))
+  const message = Buffer.from(stringify(data))
   const signer = createSign('sha512')
   signer.update(message)
   signer.end()
@@ -30,8 +31,8 @@ const sign = ({ privateKey, passphrase, ...data }) => {
     },
     {
       type: 'input',
-      name: 'receiver',
-      message: "What's the receivers id?",
+      name: 'recipient',
+      message: "What's the recipients id?",
       validate: addressValidator,
     },
     {
@@ -59,13 +60,13 @@ const sign = ({ privateKey, passphrase, ...data }) => {
     },
   ])
 
-  const { sender, amount, message, receiver, passphrase, pkpath } = answers
+  const { sender, amount, message, recipient, passphrase, pkpath } = answers
   const privateKey = readFileSync(pkpath, 'utf-8')
-  const signature = sign({ sender, receiver, amount, message, privateKey, passphrase })
+  const signature = sign({ sender, recipient, amount, message, privateKey, passphrase })
 
   console.log('\nSigned Transaction\n', {
     sender,
-    receiver,
+    recipient,
     amount,
     message,
     signature,

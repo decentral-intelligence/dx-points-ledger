@@ -1,4 +1,4 @@
-import { encodeReedSolomon } from './encodeReedSolomon'
+import { encodeReedSolomon } from '../encodeReedSolomon'
 import { createHash } from 'crypto'
 
 describe('encodeReedSolomon', () => {
