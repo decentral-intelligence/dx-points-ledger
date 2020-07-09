@@ -16,6 +16,7 @@ export const verifyTransaction = (
       sender,
       amount,
       message,
+      // TODO: consider tags?!
     }),
   )
   const isVerified = verifySignature({

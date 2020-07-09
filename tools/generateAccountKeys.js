@@ -9,15 +9,14 @@ const generateKeys = (passphrase) => {
     throw new Error(`Passphrase must have a least ${MinimumPassphraseLength} characters`)
   }
 
-  const { publicKey, privateKey } = generateKeyPairSync('ec', {
-    namedCurve: 'sect571r1',
+  const { publicKey, privateKey } = generateKeyPairSync('ed448', {
     publicKeyEncoding: {
       type: 'spki',
-      format: 'pem',
+      format: 'der',
     },
     privateKeyEncoding: {
       type: 'pkcs8',
-      format: 'pem',
+      format: 'der',
       cipher: 'aes-256-cbc',
       passphrase,
     },
@@ -39,13 +38,24 @@ const generateKeys = (passphrase) => {
 
   const keys = generateKeys(passphrase)
 
-  writeFileSync('publickey.pem', keys.publicKey, 'utf-8')
-  writeFileSync('privatekey.pem', keys.privateKey, 'utf-8')
+  const publickeyB64 = keys.publicKey.toString('base64')
+  const privatekeyB64 = keys.privateKey.toString('base64')
+  const publickeyPath = 'publickey.b64'
+  const privatekeyPath = 'privatekey.enc.b64'
+
+  writeFileSync(publickeyPath, publickeyB64, 'utf-8')
+  writeFileSync(privatekeyPath, privatekeyB64, 'utf-8')
 
   console.log('Keys stored successfully')
+  console.log('Public Key:', publickeyPath)
+  console.log('Private Key:', privatekeyPath)
   console.log(
     'Store them in a safe place together with the used passphrase for the encrypted private key',
   )
-  console.log('The public key is used for account creation')
-  console.log(keys.publicKey)
+  console.log(
+    'The public key is used for account creation, while the private is used for transaction signing',
+  )
+
+  console.log('------------ PUBLIC KEY ------------------')
+  console.log(publickeyB64)
 })()

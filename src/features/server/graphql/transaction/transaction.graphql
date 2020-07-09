@@ -13,6 +13,7 @@ input TransferInput {
   amount: Int!
   message: String
   tags: [String]
+  signature: String!
 }
 
 extend type Mutation {

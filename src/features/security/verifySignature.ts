@@ -1,4 +1,5 @@
-import { createVerify } from 'crypto'
+import { verify } from 'crypto'
+import { logger } from '../@common/logger'
 
 interface VerifyArgs {
   /**
@@ -12,11 +13,7 @@ interface VerifyArgs {
   /**
    * The signers public key
    */
-  signerPublicKey: string
-  /**
-   * The algorithm used while signing, defaults to 'sha512'
-   */
-  algorithm?: 'sha256' | 'sha384' | 'sha512'
+  signerPublicKey: string | Buffer
 }
 
 /**
@@ -24,9 +21,11 @@ interface VerifyArgs {
  * @param args
  */
 export const verifySignature = (args: VerifyArgs): boolean => {
-  const { message, signature, signerPublicKey, algorithm = 'sha512' } = args
-  const verifier = createVerify(algorithm)
-  verifier.update(message)
-  verifier.end()
-  return verifier.verify(signerPublicKey, signature)
+  try {
+    const { message, signature, signerPublicKey } = args
+    return verify(null, message, signerPublicKey, signature)
+  } catch (e) {
+    logger.error('Signature Verification failed')
+    return false
+  }
 }

@@ -126,3 +126,4 @@ ipfs
 orbitdb
 build
 *.pem
+*.b64

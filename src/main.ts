@@ -11,6 +11,18 @@ async function shutdown() {
   logger.info('Done')
 }
 
+const eventuallyPrintSecurityWarning = () => {
+  if (!Boolean(config.get('verifySignatures'))) {
+    logger.warn(`
+==========================================================
+
+            SIGNATURE VERIFICATION NOT ACTIVE
+    
+==========================================================    
+    `)
+  }
+}
+
 async function start() {
   logger.info('Starting XPoints Backbone')
   const ipfsService = new IpfsService()
@@ -21,6 +33,8 @@ async function start() {
     accountsDatabaseAddress: config.get('db.accounts'),
   })
   await graphQlServer.start()
+
+  eventuallyPrintSecurityWarning()
 }
 
 ;(async () => {
