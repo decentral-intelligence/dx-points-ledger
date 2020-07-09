@@ -1,4 +1,4 @@
-const { createSign } = require('crypto')
+const { sign, createPrivateKey } = require('crypto')
 const { readFileSync } = require('fs')
 const { prompt } = require('inquirer')
 const stringify = require('json-stable-stringify')
@@ -7,17 +7,19 @@ const isAddress = (str) => /XPOINTZ-(\w{4}-){3}\w{5}/.test(str)
 
 const addressValidator = (address) => (isAddress(address) ? true : 'Not a valid account')
 
-const sign = ({ privateKey, passphrase, ...data }) => {
+const signTx = ({ encryptedPrivateKey, passphrase, ...data }) => {
   const message = Buffer.from(stringify(data))
-  const signer = createSign('sha512')
-  signer.update(message)
-  signer.end()
+  const decodedPrivateKey = Buffer.from(encryptedPrivateKey, 'base64')
 
-  const signature = signer.sign({
-    key: privateKey,
+  const privateKey = createPrivateKey({
+    key: decodedPrivateKey,
+    format: 'der',
+    type: 'pkcs8',
+    cipher: 'aes-256-cbc',
     passphrase,
   })
 
+  const signature = sign(null, message, privateKey)
   return signature.toString('base64')
 }
 
@@ -51,7 +53,7 @@ const sign = ({ privateKey, passphrase, ...data }) => {
       type: 'input',
       name: 'pkpath',
       message: 'The private keys file path',
-      default: './privatekey.pem',
+      default: './privatekey.enc.b64',
     },
     {
       type: 'password',
@@ -61,8 +63,8 @@ const sign = ({ privateKey, passphrase, ...data }) => {
   ])
 
   const { sender, amount, message, recipient, passphrase, pkpath } = answers
-  const privateKey = readFileSync(pkpath, 'utf-8')
-  const signature = sign({ sender, recipient, amount, message, privateKey, passphrase })
+  const encryptedPrivateKey = readFileSync(pkpath, 'utf-8')
+  const signature = signTx({ sender, recipient, amount, message, encryptedPrivateKey, passphrase })
 
   console.log('\nSigned Transaction\n', {
     sender,

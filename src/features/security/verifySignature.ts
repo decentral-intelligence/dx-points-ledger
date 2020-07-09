@@ -1,4 +1,4 @@
-import { verify } from 'crypto'
+import { KeyObject, verify } from 'crypto'
 import { logger } from '../@common/logger'
 
 interface VerifyArgs {
@@ -13,7 +13,7 @@ interface VerifyArgs {
   /**
    * The signers public key
    */
-  signerPublicKey: string | Buffer
+  signerPublicKey: KeyObject
 }
 
 /**
