@@ -9,7 +9,7 @@
     "prebuild:copygql": "copyfiles -u 1 \"./src/**/*.graphql\" \"./src/config/*.json\" ./build",
     "dev": "NODE_ENV=development nodemon",
     "ipfs:up": "docker run ipfs/go-ipfs -d",
-    "build": "npm run prebuild && tsc",
+    "build": "tsc",
     "lint": "eslint . --ext .ts",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "test": "echo \"Error: no test specified\" && exit 1",

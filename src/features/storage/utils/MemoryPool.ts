@@ -13,7 +13,7 @@ export interface EntryPoolOptions<T> {
   /**
    * The action to be called, whether timeout or limit is reached
    */
-  action: EntryPoolAction<T>
+  action: MemoryPoolAction<T>
 
   /**
    * If set a deduplication function, any added entry in pool will be compared to existing ones
@@ -25,13 +25,13 @@ export interface EntryPoolOptions<T> {
   dedupeFn?: (entry: T, otherEntry: T) => boolean
 }
 
-export type EntryPoolAction<T> = (entry: Array<T>) => Promise<void>
+export type MemoryPoolAction<T> = (entry: Array<T>) => Promise<void>
 
 /**
  * A class to hold back items from being processed until its limit (amount of entries) or
  * a certain time is reached
  */
-export class EntryPool<T> {
+export class MemoryPool<T> {
   get entries(): T[] {
     return this._entries
   }

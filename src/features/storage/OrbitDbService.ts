@@ -6,10 +6,10 @@ import EventStore from 'orbit-db-eventstore'
 import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
 import { TransactionData } from './models/TransactionData'
 import { IpfsService } from './IpfsService'
-import { EntryPool } from './utils'
+import { MemoryPool } from './utils'
 
 export class OrbitDbService {
-  get transactionsPool(): EntryPool<TransactionData> {
+  get transactionsPool(): MemoryPool<TransactionData> {
     return this._transactionsPool
   }
 
@@ -30,7 +30,7 @@ export class OrbitDbService {
   private ipfsService: IpfsService | undefined
   private orbitdb: OrbitDB | undefined
   private _transactions: EventStore<TransactionData> | undefined
-  private _transactionsPool = new EntryPool<TransactionData>()
+  private _transactionsPool = new MemoryPool<TransactionData>()
   private _accounts: DocumentStore<Account> | undefined
 
   private async initAccounts(address: string): Promise<void> {

@@ -8,7 +8,7 @@ import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
 import { OrbitDbService } from './OrbitDbService'
-import { EntryPool } from './utils'
+import { MemoryPool } from './utils'
 
 export interface TransactionArgs {
   sender: Account
@@ -27,7 +27,7 @@ interface TransactionServiceOptions {
 
 export class TransactionService extends DataSource {
   private transactions: EventStore<TransactionData>
-  private transactionsPoolSingleton: EntryPool<TransactionData>
+  private transactionsPoolSingleton: MemoryPool<TransactionData>
 
   constructor(private options: TransactionServiceOptions) {
     super()

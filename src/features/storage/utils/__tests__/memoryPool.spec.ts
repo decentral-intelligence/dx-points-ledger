@@ -1,4 +1,4 @@
-import { EntryPool } from '../EntryPool'
+import { MemoryPool } from '../MemoryPool'
 import { Seconds } from '../constants'
 
 describe('EntryPool', () => {
@@ -7,7 +7,7 @@ describe('EntryPool', () => {
 
     const action = jest.fn(callback)
 
-    const pool = new EntryPool<number>()
+    const pool = new MemoryPool<number>()
 
     pool.initialize({
       timeout: 5 * Seconds,
@@ -27,7 +27,7 @@ describe('EntryPool', () => {
 
     const action = jest.fn(callback)
 
-    const pool = new EntryPool<number>()
+    const pool = new MemoryPool<number>()
 
     pool.initialize({
       timeout: 5 * Seconds,
@@ -47,7 +47,7 @@ describe('EntryPool', () => {
 
     const action = jest.fn(callback)
 
-    const pool = new EntryPool<number>()
+    const pool = new MemoryPool<number>()
 
     pool.initialize({
       timeout: 2 * Seconds,
@@ -69,7 +69,7 @@ describe('EntryPool', () => {
 
     const action = jest.fn(callback)
 
-    const pool = new EntryPool<number>()
+    const pool = new MemoryPool<number>()
 
     pool.initialize({
       timeout: 2 * Seconds,
