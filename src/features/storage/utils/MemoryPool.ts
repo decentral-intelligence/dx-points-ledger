@@ -1,7 +1,7 @@
 import { logger } from '../../@common/logger'
 import { EventEmitter } from 'events'
 
-export interface EntryPoolOptions<T> {
+export interface MemoryPoolOptions<T> {
   /**
    * Timeout in milliseconds until action is triggered
    * */
@@ -40,26 +40,26 @@ export class MemoryPool<T> {
   private timeoutHandler: NodeJS.Timeout | null = null
   private emitter = new EventEmitter()
   private isFinishing = false
-  private options: EntryPoolOptions<T> | null = null
+  private options: MemoryPoolOptions<T> | null = null
 
   public get isInitialized(): boolean {
     return this.options !== null
   }
 
-  public initialize(options: EntryPoolOptions<T>) {
+  public initialize(options: MemoryPoolOptions<T>) {
     if (this.options !== null) {
-      throw new Error('EntryPool already initialized')
+      throw new Error('Memory pool already initialized')
     }
     this.options = options
   }
 
   public addEntry(entry: T): void {
     if (this.options === null) {
-      throw new Error('EntryPool not initialized yet')
+      throw new Error('Memory pool not initialized yet')
     }
 
     if (this.isFinishing) {
-      logger.warn('EntryPool is finishing. Entry ignored')
+      logger.warn('Memory pool is finishing. Entry ignored')
       return
     }
 
@@ -83,7 +83,7 @@ export class MemoryPool<T> {
 
   public dispatch(): void {
     if (this.options === null) {
-      throw new Error('EntryPool not initialized yet')
+      throw new Error('Memory pool not initialized yet')
     }
 
     if (this.timeoutHandler !== null) {
@@ -93,7 +93,7 @@ export class MemoryPool<T> {
 
     if (this._entries.length > 0) {
       this.options.action([...this._entries]).catch((e) => {
-        logger.error(`Pool Action failed: ${e}`)
+        logger.error(`Memory pool Action failed: ${e}`)
       })
       this.emitter.emit('dispatched')
       this._entries = []

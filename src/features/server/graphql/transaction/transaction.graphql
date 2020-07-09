@@ -4,15 +4,18 @@ type Transaction {
   recipient: Account!
   amount: Int!
   timestamp: String!
+  tags: [String]
 }
 
-input AirdropInput {
+input TransferInput {
   sender: String!
   recipient: String!
   amount: Int!
   message: String
+  tags: [String]
 }
 
 extend type Mutation {
-  airdropPoints(args: AirdropInput!): Boolean
+  airdropPoints(args: TransferInput!): Boolean
+  transferPoints(args: TransferInput!): Boolean
 }

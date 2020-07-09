@@ -1,7 +1,7 @@
-import { logger } from '../../../../@common/logger'
-import { CustomApolloContext } from '../../types/CustomApolloContext'
+import { logger } from '../../../../../@common/logger'
+import { CustomApolloContext } from '../../../types/CustomApolloContext'
 
-const createAccount = (
+export const createAccountResolver = (
   parent: any,
   { args }: any,
   { dataSources }: CustomApolloContext,
@@ -9,8 +9,4 @@ const createAccount = (
   logger.debug(`Adding account ${JSON.stringify(args)}`)
   const { alias, publicKey, role } = args
   return dataSources.accounts.createAccount({ publicKey, role, alias })
-}
-
-export const mutationResolver = {
-  createAccount,
 }

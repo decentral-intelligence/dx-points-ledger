@@ -3,9 +3,8 @@ import DocumentStore from 'orbit-db-docstore'
 import { Account } from './models/Account'
 import { logger } from '../@common/logger'
 import { AccountRole } from './types/AccountRole'
-import { createHash } from 'crypto'
-import { encodeReedSolomon } from '../security/encodeReedSolomon'
 import { OrbitDbService } from './OrbitDbService'
+import { getAccountIdFromPublicKey } from './utils'
 
 interface CreateAccountArgs {
   publicKey: string
@@ -25,16 +24,9 @@ export class AccountService extends DataSource {
     return this.accounts.drop()
   }
 
-  public static getAccountIdFromPublicKey(publicKey: string): string {
-    const hash = createHash('sha256')
-    hash.update(publicKey)
-    const digest = hash.digest('hex')
-    return encodeReedSolomon('XPOINTZ', digest)
-  }
-
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
     const { publicKey } = accountArgs
-    const id = AccountService.getAccountIdFromPublicKey(publicKey)
+    const id = getAccountIdFromPublicKey(publicKey)
 
     const foundAccounts = await this.accounts.get(id)
     if (foundAccounts.length > 0) {

@@ -1,11 +1,13 @@
 import { AccountId } from './Account'
 
 export interface TransactionData {
-  sender: AccountId
-  recipient: AccountId
   amount: number
-  timestamp: number
-  signature: string
-  message?: string
   hash: string
+  isAirdrop?: boolean
+  message?: string
+  recipient: AccountId
+  sender: AccountId
+  signature: string
+  timestamp: number
+  tags: string[]
 }

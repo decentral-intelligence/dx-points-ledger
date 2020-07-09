@@ -3,6 +3,7 @@ import { AccountData } from '../models/Account'
 import { verifySignature } from '../../security/verifySignature'
 // @ts-ignore
 import stableStringify from 'json-stable-stringify'
+import { NotAllowedError } from '../../../types/exceptions/NotAllowedError'
 
 export const verifyTransaction = (
   transaction: TransactionData,
@@ -24,6 +25,6 @@ export const verifyTransaction = (
   })
 
   if (!isVerified) {
-    throw new Error(`Transaction cannot be verified: ${JSON.stringify(transaction)}`)
+    throw new NotAllowedError(`Transaction cannot be verified: ${JSON.stringify(transaction)}`)
   }
 }

@@ -1,3 +1,5 @@
+// @ts-ignore
+import stableStringify from 'json-stable-stringify'
 import EventStore from 'orbit-db-eventstore'
 import { Transaction, TransactionId } from './models/Transaction'
 import { DataSource } from 'apollo-datasource'
@@ -8,7 +10,8 @@ import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
 import { OrbitDbService } from './OrbitDbService'
-import { MemoryPool } from './utils'
+import { MemoryPool, verifyTransaction } from './utils'
+import { TransactionsTags } from './utils/constants'
 
 export interface TransactionArgs {
   sender: Account
@@ -16,6 +19,7 @@ export interface TransactionArgs {
   amount: number
   message?: string
   signature: string
+  tags?: string[]
 }
 
 interface TransactionServiceOptions {
@@ -25,6 +29,9 @@ interface TransactionServiceOptions {
   verifySignatures: boolean
 }
 
+/**
+ * Class to handle transactions
+ */
 export class TransactionService extends DataSource {
   private transactions: EventStore<TransactionData>
   private transactionsPoolSingleton: MemoryPool<TransactionData>
@@ -47,15 +54,29 @@ export class TransactionService extends DataSource {
     return this.transactions.drop()
   }
 
-  public getTransactionsOfAccount(userId: AccountId): Transaction[] {
+  // TODO: this method does not scale... need to limit somehow, once codebase grew
+  public getTransactionsOfAccount(accountId: AccountId): Transaction[] {
     return this.transactions
       .iterator({ limit: -1 })
       .collect()
-      .filter(({ payload: { value } }) => value.sender === userId || value.recipient === userId)
+      .filter(
+        ({ payload: { value } }) => value.sender === accountId || value.recipient === accountId,
+      )
       .map(({ payload: { value }, hash }) => ({
         ...value,
         _id: hash,
       }))
+  }
+
+  public calculateBalanceOfAccount(accountId: AccountId): number {
+    const transactions = this.getTransactionsOfAccount(accountId)
+    return transactions.reduce((balance, { amount, sender, tags }) => {
+      if (sender === accountId) {
+        const isAirdrop = tags.includes(TransactionsTags.Airdrop)
+        return isAirdrop ? balance : balance - amount
+      }
+      return balance + amount
+    }, 0)
   }
 
   public getTransaction(id: TransactionId): Transaction | null {
@@ -66,6 +87,55 @@ export class TransactionService extends DataSource {
       ...transaction,
       _id: logEntry.hash,
     }
+  }
+
+  /**
+   * Grants an account an arbitrary amount of points (make them appear from nowhere)
+   * The sender must be of AccountRole.Admin, otherwise operation is not permitted
+   * @param args The Arguments
+   */
+  public airdrop(args: TransactionArgs): void {
+    if (!args.sender?.isOfRole(AccountRole.Admin)) {
+      throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
+    }
+
+    if (args.amount <= 0) {
+      throw new NotAllowedError(`Amount must be greater than zero`)
+    }
+
+    args.tags = args.tags ?? []
+    args.tags.push(TransactionsTags.Airdrop)
+
+    const transactionData = TransactionService.createTransactionData(args)
+    if (this.options.verifySignatures) {
+      verifyTransaction(transactionData, args.sender)
+    }
+
+    this.transactionsPoolSingleton.addEntry(transactionData)
+  }
+
+  /**
+   * Transfers an amount from one account to another
+   * @param args The Arguments
+   */
+  public async transfer(args: TransactionArgs): Promise<void> {
+    const { sender } = args
+    const transactionData = TransactionService.createTransactionData(args)
+
+    if (transactionData.amount <= 0) {
+      throw new NotAllowedError(`Amount must be greater than zero`)
+    }
+
+    const senderBalance = this.calculateBalanceOfAccount(sender._id)
+    if (senderBalance < transactionData.amount) {
+      throw new NotAllowedError(`Account [${sender._id}] has insufficient balance`)
+    }
+
+    if (this.options.verifySignatures) {
+      verifyTransaction(transactionData, args.sender)
+    }
+
+    this.transactionsPoolSingleton.addEntry(transactionData)
   }
 
   private async addTransactions(transactions: TransactionData[]): Promise<void> {
@@ -101,20 +171,6 @@ export class TransactionService extends DataSource {
     return identicalTransactions.length === 0
   }
 
-  /**
-   * Grants an account an arbitrary amount of points (make them appear from nowhere)
-   * The sender must be of AccountRole.Admin, otherwise operation is not permitted
-   * @param args The Arguments
-   */
-  public airdrop(args: TransactionArgs): void {
-    if (!args.sender?.isOfRole(AccountRole.Admin)) {
-      throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
-    }
-
-    const transactionData = TransactionService.createTransactionData(args)
-    this.transactionsPoolSingleton.addEntry(transactionData)
-  }
-
   private static createTransactionData(txArgs: TransactionArgs): TransactionData {
     let transactionData = {
       sender: txArgs.sender._id,
@@ -122,46 +178,17 @@ export class TransactionService extends DataSource {
       amount: txArgs.amount,
       message: txArgs.message,
       signature: txArgs.signature,
+      tags: txArgs.tags || [],
     }
 
     const hash = generateHash({
-      message: JSON.stringify(transactionData),
+      message: stableStringify(transactionData),
     })
 
     return {
       ...transactionData,
       hash,
       timestamp: Date.now(),
-    }
-  }
-
-  /**
-   * Transfers an amount from one account to another
-   * @param args The Arguments
-   */
-  public async transfer(args: TransactionArgs): Promise<void> {
-    // 1 - validation
-    // check senders balance
-    // check timeframe (not here yet)
-    // verify signature
-    // verify tx with same signature
-
-    // 2 - commit
-    // add transaction
-    // update balances
-
-    if (this.options.verifySignatures) {
-      // TODO: verify signature!
-    }
-
-    const transactionData = TransactionService.createTransactionData(args)
-    // this.enqueueTransaction(transactionData)
-  }
-
-  private validateSignature(transactionData: TransactionData) {
-    if (this.options.verifySignatures) {
-      // TODO: verify signature!
-      transactionData
     }
   }
 }
