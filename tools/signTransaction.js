@@ -15,7 +15,6 @@ const signTx = ({ encryptedPrivateKey, passphrase, ...data }) => {
     key: decodedPrivateKey,
     format: 'der',
     type: 'pkcs8',
-    cipher: 'aes-256-cbc',
     passphrase,
   })
 

@@ -68,40 +68,41 @@ describe('verifyTransaction', () => {
     }).not.toThrow()
   })
 
-  // it('should correctly throw exception for an invalid transaction', () => {
-  //   const sender: AccountData = {
-  //     publicKey: 'Some invalid pubkey',
-  //     _id: 'senderId',
-  //     alias: 'Test Account',
-  //     balance: 1000,
-  //     isActive: true,
-  //     role: AccountRole.Admin,
-  //   }
-  //   const transactionData: any = {
-  //     message: 'Some message',
-  //     sender: 'senderId',
-  //     recipient: 'recipientId',
-  //     amount: 1000,
-  //   }
-  //   const message = Buffer.from(stableStringify(transactionData))
-  //   const signer = createSign('sha512')
-  //   signer.update(message)
-  //   signer.end()
-  //
-  //   const signature = signer.sign({
-  //     key: privKey,
-  //     passphrase: TestSecret,
-  //   })
-  //
-  //   const signedTransaction: TransactionData = {
-  //     ...transactionData,
-  //     hash: 'somehash',
-  //     timestamp: 1000,
-  //     signature,
-  //   }
-  //
-  //   expect(() => {
-  //     verifyTransaction(signedTransaction, sender)
-  //   }).toThrow()
-  // })
+  it('should correctly verify a valid transaction', () => {
+    const sender: AccountData = {
+      publicKey: pubKey.toString('base64'),
+      _id: 'senderId',
+      alias: 'Test Account',
+      balance: 1000,
+      isActive: true,
+      role: AccountRole.Admin,
+    }
+    const transactionData: any = {
+      message: 'Some message',
+      sender: 'senderId',
+      recipient: 'recipientId',
+      amount: 1000,
+    }
+    const message = Buffer.from(stableStringify(transactionData))
+
+    let keyObject = createPrivateKey({
+      key: privKey,
+      format: 'der',
+      type: 'pkcs8',
+      passphrase: TestSecret,
+    })
+
+    const signature = sign(null, message, keyObject)
+
+    const signedTransaction: TransactionData = {
+      ...transactionData,
+      hash: 'somehash',
+      timestamp: 1000,
+      signature: signature.toString('base64'),
+    }
+
+    expect(() => {
+      verifyTransaction(signedTransaction, sender)
+    }).not.toThrow()
+  })
 })
