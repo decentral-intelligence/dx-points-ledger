@@ -83,3 +83,27 @@ mutation($input: TransferInput!) {
 
 As you can see there's a signature field, which is required. The signature can be generated using the
 `npm run tool-sign-tx` command. Just follow the instructions.
+
+```bash
+ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-backbone$ npm run tool-sign-tx
+
+> dx-points-backbone@1.0.0 tool-sign-tx /home/ohager/code/dextra/dia/dx-points-backbone
+> node ./tools/signTransaction.js
+
+? What's the senders id? XPOINTZ-E9CF-YEQX-EFX3-5CKSL
+? What's the recipients id? XPOINTZ-XHLG-ZYAB-ABQU-XNURB
+? What's the amount to send? 5
+? Enter an additional message First transfer with signature
+? The private keys file path ./privatekey.enc.b64
+? The passphrase for the private key [hidden]
+
+Signed Transaction
+ {
+  sender: 'XPOINTZ-E9CF-YEQX-EFX3-5CKSL',
+  recipient: 'XPOINTZ-XHLG-ZYAB-ABQU-XNURB',
+  amount: 5,
+  message: 'First transfer with signature',
+  signature: 'JrBj0mfZCLp/YUJ47O1n8FXtic82LC/su8+Dbitc6aNBX+b6xj3mGjNdRTTnFmOsRX+blz1KK2uArV1Iov28qLLfOrADtfEGI/G89CdW3yT/uwCIra9aG01ZuvJdsZH5S23+2O4YR1/1OyneWOS9IiYA'
+}
+
+```
