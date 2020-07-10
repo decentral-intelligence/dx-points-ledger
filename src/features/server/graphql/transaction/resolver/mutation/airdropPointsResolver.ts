@@ -2,19 +2,20 @@ import { NotAllowedError } from '../../../../../../types/exceptions/NotAllowedEr
 import { ForbiddenError } from 'apollo-server'
 import { CustomApolloContext } from '../../../types/CustomApolloContext'
 import { tryGetAccounts } from './tryGetAccounts'
+import { TransactionData } from '../../../../../storage/models/TransactionData'
 
-export const airdropPointsResolver = async (
+export const airdropPointsResolver = (
   parent: any,
   { args }: any,
   { dataSources }: CustomApolloContext,
-): Promise<any> => {
+): TransactionData => {
   try {
     const { recipient, sender } = tryGetAccounts({
       accountService: dataSources.accounts,
       recipientId: args.recipient,
       senderId: args.sender,
     })
-    return await dataSources.transactions.airdrop({
+    return dataSources.transactions.airdrop({
       ...args,
       sender,
       recipient,

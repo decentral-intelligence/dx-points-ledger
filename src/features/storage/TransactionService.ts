@@ -94,7 +94,7 @@ export class TransactionService extends DataSource {
    * The sender must be of AccountRole.Admin, otherwise operation is not permitted
    * @param args The Arguments
    */
-  public airdrop(args: TransactionArgs): void {
+  public airdrop(args: TransactionArgs): TransactionData {
     if (!args.sender?.isOfRole(AccountRole.Admin)) {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
@@ -112,13 +112,15 @@ export class TransactionService extends DataSource {
     }
 
     this.transactionsPoolSingleton.addEntry(transactionData)
+
+    return transactionData
   }
 
   /**
    * Transfers an amount from one account to another
    * @param args The Arguments
    */
-  public async transfer(args: TransactionArgs): Promise<void> {
+  public transfer(args: TransactionArgs): TransactionData {
     const { sender } = args
     const transactionData = TransactionService.createTransactionData(args)
 
@@ -136,6 +138,8 @@ export class TransactionService extends DataSource {
     }
 
     this.transactionsPoolSingleton.addEntry(transactionData)
+
+    return transactionData
   }
 
   private async addTransactions(transactions: TransactionData[]): Promise<void> {

@@ -1,5 +1,5 @@
-import { Entity } from './Entity'
 import { TransactionData } from './TransactionData'
+import { Entity } from './Entity'
 
 export type TransactionId = string
 

@@ -18,6 +18,10 @@ const TransactionResolver = {
     sender: transactionSenderResolver,
     recipient: transactionRecipientResolver,
   },
+  UnconfirmedTransaction: {
+    sender: transactionSenderResolver,
+    recipient: transactionRecipientResolver,
+  },
 }
 
 export default TransactionResolver

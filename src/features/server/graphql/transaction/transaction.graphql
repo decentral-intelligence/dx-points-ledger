@@ -8,6 +8,15 @@ type Transaction {
   signature: String!
 }
 
+type UnconfirmedTransaction {
+  sender: Account!
+  recipient: Account!
+  amount: Int!
+  timestamp: String!
+  tags: [String]
+  signature: String!
+}
+
 input TransferInput {
   sender: String!
   recipient: String!
@@ -18,6 +27,6 @@ input TransferInput {
 }
 
 extend type Mutation {
-  airdropPoints(args: TransferInput!): Boolean
-  transferPoints(args: TransferInput!): Boolean
+  airdropPoints(args: TransferInput!): UnconfirmedTransaction!
+  transferPoints(args: TransferInput!): UnconfirmedTransaction!
 }

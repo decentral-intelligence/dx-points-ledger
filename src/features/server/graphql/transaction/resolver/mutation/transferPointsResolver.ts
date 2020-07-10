@@ -2,12 +2,13 @@ import { NotAllowedError } from '../../../../../../types/exceptions/NotAllowedEr
 import { ForbiddenError } from 'apollo-server'
 import { CustomApolloContext } from '../../../types/CustomApolloContext'
 import { tryGetAccounts } from './tryGetAccounts'
+import { TransactionData } from '../../../../../storage/models/TransactionData'
 
-export const transferPointsResolver = async (
+export const transferPointsResolver = (
   parent: any,
   { args }: any,
   { dataSources }: CustomApolloContext,
-): Promise<any> => {
+): TransactionData => {
   try {
     const { recipient, sender } = tryGetAccounts({
       accountService: dataSources.accounts,
@@ -15,7 +16,7 @@ export const transferPointsResolver = async (
       senderId: args.sender,
     })
 
-    return await dataSources.transactions.transfer({
+    return dataSources.transactions.transfer({
       ...args,
       sender,
       recipient,
