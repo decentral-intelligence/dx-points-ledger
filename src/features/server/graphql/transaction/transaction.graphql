@@ -5,6 +5,7 @@ type Transaction {
   amount: Int!
   timestamp: String!
   tags: [String]
+  signature: String!
 }
 
 input TransferInput {
