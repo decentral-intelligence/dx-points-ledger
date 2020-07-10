@@ -15,6 +15,23 @@ Therefore, use the following command
 npm run tool-gen-account-keys
 ```
 
+```
+ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-backbone$ npm run tool-gen-account-keys
+
+> dx-points-backbone@1.0.0 tool-gen-account-keys /home/ohager/code/dextra/dia/dx-points-backbone
+> node ./tools/generateAccountKeys.js
+
+? passphrase: [hidden]
+Keys stored successfully
+Public Key: publickey.b64
+Private Key: privatekey.enc.b64
+Store them in a safe place together with the used passphrase for the encrypted private key
+The public key is used for account creation, while the private is used for transaction signing
+------------ PUBLIC KEY ------------------
+MEMwBQYDK2VxAzoA6Xh1sOMob/7gA+OXf5hDCQwvEWm+DthgcLg0H5n84VqdCVm7o40WMxM3Qv+cpDLgYUXqcaqgNogA
+
+```
+
 Follow the instructions and keep the passphrase and the private key file secretly in a safe place. You need them both to sign transactions.
 
 ## Create account
@@ -84,7 +101,7 @@ mutation($input: TransferInput!) {
 As you can see there's a signature field, which is required. The signature can be generated using the
 `npm run tool-sign-tx` command. Just follow the instructions.
 
-```bash
+```
 ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-backbone$ npm run tool-sign-tx
 
 > dx-points-backbone@1.0.0 tool-sign-tx /home/ohager/code/dextra/dia/dx-points-backbone
@@ -105,5 +122,4 @@ Signed Transaction
   message: 'First transfer with signature',
   signature: 'JrBj0mfZCLp/YUJ47O1n8FXtic82LC/su8+Dbitc6aNBX+b6xj3mGjNdRTTnFmOsRX+blz1KK2uArV1Iov28qLLfOrADtfEGI/G89CdW3yT/uwCIra9aG01ZuvJdsZH5S23+2O4YR1/1OyneWOS9IiYA'
 }
-
 ```
