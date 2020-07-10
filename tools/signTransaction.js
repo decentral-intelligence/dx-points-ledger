@@ -1,26 +1,7 @@
-const { sign, createPrivateKey } = require('crypto')
 const { readFileSync } = require('fs')
 const { prompt } = require('inquirer')
-const stringify = require('json-stable-stringify')
-
-const isAddress = (str) => /XPOINTZ-(\w{4}-){3}\w{5}/.test(str)
-
-const addressValidator = (address) => (isAddress(address) ? true : 'Not a valid account')
-
-const signTx = ({ encryptedPrivateKey, passphrase, ...data }) => {
-  const message = Buffer.from(stringify(data))
-  const decodedPrivateKey = Buffer.from(encryptedPrivateKey, 'base64')
-
-  const privateKey = createPrivateKey({
-    key: decodedPrivateKey,
-    format: 'der',
-    type: 'pkcs8',
-    passphrase,
-  })
-
-  const signature = sign(null, message, privateKey)
-  return signature.toString('base64')
-}
+const { signTx } = require('./common/signTx')
+const { accountValidator } = require('./common/accountValidator')
 
 ;(async () => {
   const answers = await prompt([
@@ -28,13 +9,13 @@ const signTx = ({ encryptedPrivateKey, passphrase, ...data }) => {
       type: 'input',
       name: 'sender',
       message: "What's the senders id?",
-      validate: addressValidator,
+      validate: accountValidator,
     },
     {
       type: 'input',
       name: 'recipient',
       message: "What's the recipients id?",
-      validate: addressValidator,
+      validate: accountValidator,
     },
     {
       type: 'number',
