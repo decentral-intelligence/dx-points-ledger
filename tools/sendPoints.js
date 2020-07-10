@@ -73,12 +73,10 @@ const enhancedAccountValidator = async (accountId) => {
     signature,
   }
 
-  console.log('pyaload', payload)
-
   const response = await (isAirdrop ? airdropPoints(payload) : transferPoints(payload))
 
   if (response.statusCode === 200) {
-    console.log(`Successfully transferred ${amount} points`)
+    console.log('Transfer enqueued', response.data.airdropPoints || response.data.transferPoints)
   } else {
     console.error('Ah snap:', response.message)
   }

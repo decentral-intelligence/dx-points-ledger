@@ -8,7 +8,21 @@ const airdropPoints = (airdropInput) =>
       args: {
         args: '$input',
       },
-      fields: ['_id'],
+      fields: [
+        {
+          sender: {
+            fields: ['_id'],
+          },
+        },
+        {
+          recipient: {
+            fields: ['_id'],
+          },
+        },
+        'amount',
+        'tags',
+        'signature',
+      ],
     },
     variables: {
       input: {
