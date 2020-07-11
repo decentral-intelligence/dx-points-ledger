@@ -1,20 +1,18 @@
 # dx-points-backbone
 
-Decentralized Backbone for DxPoints et al.
+Decentralized Backbone for persisting points/tokens
 
 This is a simple service to provide access to the distributed
-storage of DxPoints (Working Title)
+storage of xPoints.
 
-## Prerequisites
-
-- NodeJS (>=14) installed
-- This service needs a running [IPFS Daemon](https://docs.ipfs.io/install/command-line-quick-start/#install-ipfs).
-
-To start the daemon (with default settings) you need pubsub enabled, e.g. run
-
-`ipfs daemon --enable-pubsub-experiment`
+The entities are stored in [OrbitDb](https://orbitdb.org), which is built
+on top of [IPFS](https://ipfs.io). These technologies are part of
+the so called [Web 3.0](https://medium.com/bitfishlabs/the-decentralized-internet-is-here-web-3-0-and-the-future-of-blockchain-powered-future-f16ff02584a9),
+which is about a decentralization of the internet using peer-to-peer architectures
 
 ## Installation
+
+> Requires NodeJS (>=14) installed
 
 Just do `npm install` - the rest is coffee time
 
