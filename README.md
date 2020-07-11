@@ -30,3 +30,8 @@ Calling `npm run build` to transpile into javascript into `./build`-folder
 
 Calling `npm run dev` to run a nodemon watcher that transpiles
 from typescript to javascript and re-executes the code on changes.
+
+# Further Documentations
+
+[About Signatures](./SIGNING.MD)
+[More tools](./TOOLS.MD)
