@@ -1,11 +1,12 @@
-import { createHash, HexBase64Latin1Encoding } from 'crypto'
+import { createHash } from 'crypto'
 
 type HashingAlgorithm = 'sha256' | 'sha384' | 'sha512' | 'ripemd160'
+type HashEncoding = 'hex' | 'base64'
 
 interface HashArgs {
   message: string
   algorithm?: HashingAlgorithm
-  encoding?: HexBase64Latin1Encoding
+  encoding?: HashEncoding
 }
 
 // FIXME: write tests
