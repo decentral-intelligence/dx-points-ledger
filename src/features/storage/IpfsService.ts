@@ -8,7 +8,7 @@ export class IpfsService {
 
   private _ipfs: any
 
-  public async start(config: object): Promise<void> {
+  public async start(config: unknown): Promise<void> {
     logger.info('Booting IPFS...')
     logger.debug(JSON.stringify(config))
     // @ts-ignore

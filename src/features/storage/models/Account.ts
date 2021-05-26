@@ -25,7 +25,7 @@ export class Account implements Entity {
   }
 
   static readFromJson(data: AccountData): Account {
-    let account = new Account()
+    const account = new Account()
     Object.keys(data).forEach((k) => {
       // @ts-ignore
       account[k] = data[k]

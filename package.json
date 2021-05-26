@@ -73,7 +73,7 @@
     "ipfs-http-client": "^44.3.0",
     "json-stable-stringify": "^1.0.1",
     "node-graceful-shutdown": "^1.1.0",
-    "orbit-db": "^0.26.0",
+    "orbit-db": "^0.26.1",
     "p-queue": "^7.1.0",
     "pino": "^6.11.3",
     "pino-pretty": "^5.0.0",

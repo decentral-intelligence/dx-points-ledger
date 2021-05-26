@@ -3,6 +3,7 @@ type Transaction {
   sender: Account!
   recipient: Account!
   amount: Int!
+  message: String
   timestamp: String!
   tags: [String]
   signature: String!
@@ -12,6 +13,7 @@ type UnconfirmedTransaction {
   sender: Account!
   recipient: Account!
   amount: Int!
+  message: String
   timestamp: String!
   tags: [String]
   signature: String!
