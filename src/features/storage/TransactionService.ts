@@ -55,6 +55,7 @@ export class TransactionService extends DataSource {
   }
 
   // TODO: this method does not scale... need to limit somehow, once codebase grew
+  // idea: creating snapshots from time to time
   public getTransactionsOfAccount(accountId: AccountId): Transaction[] {
     return this.transactions
       .iterator({ limit: -1 })
@@ -149,7 +150,7 @@ export class TransactionService extends DataSource {
   }
 
   private async addSingleTransaction(transactionData: TransactionData): Promise<void> {
-    let isNew = await this.isNewTransaction(transactionData)
+    const isNew = await this.isNewTransaction(transactionData)
     if (!isNew) {
       logger.warn(`Discarding already existing transaction with hash: ${transactionData.hash}`)
       return
@@ -176,7 +177,7 @@ export class TransactionService extends DataSource {
   }
 
   private static createTransactionData(txArgs: TransactionArgs): TransactionData {
-    let transactionData = {
+    const transactionData = {
       sender: txArgs.sender._id,
       recipient: txArgs.recipient._id,
       amount: txArgs.amount,

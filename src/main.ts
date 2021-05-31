@@ -12,7 +12,7 @@ async function shutdown() {
 }
 
 const eventuallyPrintSecurityWarning = () => {
-  if (!Boolean(config.get('verifySignatures'))) {
+  if (!config.get('verifySignatures')) {
     logger.warn(`
 ==========================================================
 
