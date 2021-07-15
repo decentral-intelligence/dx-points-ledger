@@ -1,11 +1,7 @@
 import { Crypto, CryptoKey } from '@peculiar/webcrypto'
+import { SigningAlgorithm } from './securityParameters'
 
 const crypto = new Crypto()
-
-export const SigningAlgorithm = {
-  name: 'ECDSA',
-  hash: 'SHA-512',
-}
 
 interface VerifyArgs {
   /**

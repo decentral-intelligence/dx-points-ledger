@@ -1,9 +1,7 @@
 const { readFileSync } = require('fs')
 const { prompt } = require('inquirer')
 const { signTx } = require('./common/signTx')
-const { accountValidator } = require('./common/accountValidator')
-
-;(async () => {
+const { accountValidator } = require('./common/accountValidator')(async () => {
   const answers = await prompt([
     {
       type: 'input',

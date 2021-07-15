@@ -1,13 +1,14 @@
 // @ts-ignore
 import stableStringify from 'json-stable-stringify'
-// import { createPrivateKey, createPublicKey, generateKeyPairSync, sign } from 'crypto'
 import { Crypto, CryptoKey } from '@peculiar/webcrypto'
-import { verifySignature, SigningAlgorithm } from '../verifySignature'
+import { verifySignature } from '../verifySignature'
+import { ECDSAParameters, SigningAlgorithm } from '../securityParameters'
 
 interface CryptoKeyPair {
   publicKey: CryptoKey
   privateKey: CryptoKey
 }
+
 const crypto = new Crypto()
 
 describe('verifySignature', () => {
@@ -17,14 +18,7 @@ describe('verifySignature', () => {
     baz: 42,
   }
   beforeAll(async () => {
-    keys = await crypto.subtle.generateKey(
-      {
-        name: 'ECDSA',
-        namedCurve: 'P-521',
-      },
-      false,
-      ['sign', 'verify'],
-    )
+    keys = await crypto.subtle.generateKey(ECDSAParameters, false, ['sign', 'verify'])
   })
 
   it('should correctly verify a valid signature', async () => {
