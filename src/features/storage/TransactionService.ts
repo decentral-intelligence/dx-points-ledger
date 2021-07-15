@@ -10,8 +10,9 @@ import { generateHash } from '../security/generateHash'
 import { logger } from '../@common/logger'
 import { TransactionData } from './models/TransactionData'
 import { OrbitDbService } from './OrbitDbService'
-import { MemoryPool, verifyTransaction } from './utils'
+import { MemoryPool } from './utils'
 import { TransactionsTags } from './utils/constants'
+import { verifyTransaction } from '../security/verifyTransaction'
 
 export interface TransactionArgs {
   sender: Account
@@ -95,7 +96,7 @@ export class TransactionService extends DataSource {
    * The sender must be of AccountRole.Admin, otherwise operation is not permitted
    * @param args The Arguments
    */
-  public airdrop(args: TransactionArgs): TransactionData {
+  public async airdrop(args: TransactionArgs): Promise<TransactionData> {
     if (!args.sender?.isOfRole(AccountRole.Admin)) {
       throw new NotAllowedError(`Account [${args.sender?._id}] has insufficient permission`)
     }
@@ -109,7 +110,7 @@ export class TransactionService extends DataSource {
 
     const transactionData = TransactionService.createTransactionData(args)
     if (this.options.verifySignatures) {
-      verifyTransaction(transactionData, args.sender)
+      await verifyTransaction(transactionData, args.sender)
     }
 
     this.transactionsPoolSingleton.addEntry(transactionData)
@@ -121,7 +122,7 @@ export class TransactionService extends DataSource {
    * Transfers an amount from one account to another
    * @param args The Arguments
    */
-  public transfer(args: TransactionArgs): TransactionData {
+  public async transfer(args: TransactionArgs): Promise<TransactionData> {
     const { sender } = args
     const transactionData = TransactionService.createTransactionData(args)
 
@@ -135,7 +136,7 @@ export class TransactionService extends DataSource {
     }
 
     if (this.options.verifySignatures) {
-      verifyTransaction(transactionData, args.sender)
+      await verifyTransaction(transactionData, args.sender)
     }
 
     this.transactionsPoolSingleton.addEntry(transactionData)

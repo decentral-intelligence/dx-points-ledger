@@ -8,7 +8,7 @@ export const transferPointsResolver = (
   parent: any,
   { args }: any,
   { dataSources }: CustomApolloContext,
-): TransactionData => {
+): Promise<TransactionData> => {
   try {
     const { recipient, sender } = tryGetAccounts({
       accountService: dataSources.accounts,

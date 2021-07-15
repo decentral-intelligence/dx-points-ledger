@@ -5,8 +5,6 @@ const { createAccount } = require('./api/createAccount')
 
 const crypto = new Crypto()
 
-const MinimumPassphraseLength = 10
-
 const generateKeys = async () => {
   const keys = await crypto.subtle.generateKey(
     {
@@ -23,12 +21,6 @@ const generateKeys = async () => {
 const exportBase64Jwk = async (key) => {
   const jwk = await crypto.subtle.exportKey('jwk', key)
   return Buffer.from(JSON.stringify(jwk)).toString('base64')
-}
-
-const passphraseValidator = (passphrase) => {
-  return passphrase.length < MinimumPassphraseLength
-    ? `Passphrase must have a least ${MinimumPassphraseLength} characters`
-    : true
 }
 
 ;(async () => {
