@@ -28,7 +28,7 @@ export const verifyTransaction = (
 
   const isVerified = verifySignature({
     message: digest,
-    signerPublicKey,
+    publicKey: signerPublicKey,
     signature: Buffer.from(transaction.signature, 'base64'),
   })
 

@@ -1,11 +1,17 @@
-import { KeyObject, verify } from 'crypto'
-import { logger } from '../@common/logger'
+import { Crypto, CryptoKey } from '@peculiar/webcrypto'
+
+const crypto = new Crypto()
+
+export const SigningAlgorithm = {
+  name: 'ECDSA',
+  hash: 'SHA-512',
+}
 
 interface VerifyArgs {
   /**
-   * The signed message
+   * The signed data
    */
-  message: Buffer
+  data: Buffer
   /**
    * The signature for the related message
    */
@@ -13,19 +19,14 @@ interface VerifyArgs {
   /**
    * The signers public key
    */
-  signerPublicKey: KeyObject
+  publicKey: CryptoKey
 }
 
 /**
  * Verifies a cryptographic signature
  * @param args
  */
-export const verifySignature = (args: VerifyArgs): boolean => {
-  try {
-    const { message, signature, signerPublicKey } = args
-    return verify(null, message, signerPublicKey, signature)
-  } catch (e) {
-    logger.error('Signature Verification failed')
-    return false
-  }
+export const verifySignature = (args: VerifyArgs): Promise<boolean> => {
+  const { data, signature, publicKey } = args
+  return crypto.subtle.verify(SigningAlgorithm, publicKey, signature, data)
 }

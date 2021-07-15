@@ -1,75 +1,59 @@
 // @ts-ignore
 import stableStringify from 'json-stable-stringify'
-import { createPrivateKey, createPublicKey, generateKeyPairSync, sign } from 'crypto'
-import { verifySignature } from '../verifySignature'
+// import { createPrivateKey, createPublicKey, generateKeyPairSync, sign } from 'crypto'
+import { Crypto, CryptoKey } from '@peculiar/webcrypto'
+import { verifySignature, SigningAlgorithm } from '../verifySignature'
+
+interface CryptoKeyPair {
+  publicKey: CryptoKey
+  privateKey: CryptoKey
+}
+const crypto = new Crypto()
 
 describe('verifySignature', () => {
-  let privKey: Buffer
-  let pubKey: Buffer
-  const Passphrase = 'Passphrase'
+  let keys: CryptoKeyPair
   const TestData = {
     foo: 'bar',
     baz: 42,
   }
-  beforeAll(() => {
-    // @ts-ignore
-    const { publicKey, privateKey } = generateKeyPairSync('ed448', {
-      publicKeyEncoding: {
-        type: 'spki',
-        format: 'der',
+  beforeAll(async () => {
+    keys = await crypto.subtle.generateKey(
+      {
+        name: 'ECDSA',
+        namedCurve: 'P-521',
       },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'der',
-        cipher: 'aes-256-cbc',
-        passphrase: Passphrase,
-      },
-    })
-
-    privKey = privateKey
-    pubKey = publicKey
+      false,
+      ['sign', 'verify'],
+    )
   })
 
-  it('should correctly verify a valid signature', () => {
-    const message = Buffer.from(stableStringify(TestData))
-    const privateKey = createPrivateKey({
-      key: privKey,
-      type: 'pkcs8',
-      format: 'der',
-      passphrase: Passphrase,
-    })
-    const signature = sign(null, message, privateKey)
-    const signerPublicKey = createPublicKey({
-      key: pubKey,
-      type: 'spki',
-      format: 'der',
-    })
-
-    const isVerified = verifySignature({
-      message,
-      signerPublicKey,
+  it('should correctly verify a valid signature', async () => {
+    const data = Buffer.from(stableStringify(TestData))
+    const signature = await crypto.subtle.sign(SigningAlgorithm, keys.privateKey, data)
+    const isVerified = await verifySignature({
+      data,
+      publicKey: keys.publicKey,
       signature,
     })
 
     expect(isVerified).toBeTruthy()
   })
 
-  it('should return false for another public key', () => {
-    const message = Buffer.from(stableStringify(TestData))
+  it('should return false for another public key', async () => {
+    const data = Buffer.from(stableStringify(TestData))
 
-    // @ts-ignore
-    const { publicKey: otherPublicKey } = generateKeyPairSync('ed448')
-    const privateKey = createPrivateKey({
-      key: privKey,
-      type: 'pkcs8',
-      format: 'der',
-      passphrase: Passphrase,
-    })
-    const signature = sign(null, message, privateKey)
-
-    const isVerified = verifySignature({
-      message,
-      signerPublicKey: otherPublicKey,
+    const otherKeys = await crypto.subtle.generateKey(
+      {
+        name: 'ECDSA',
+        namedCurve: 'P-521',
+      },
+      false,
+      ['sign', 'verify'],
+    )
+    const signature = await crypto.subtle.sign(SigningAlgorithm, keys.privateKey, data)
+    const isVerified = await verifySignature({
+      data,
+      publicKey: otherKeys.publicKey,
       signature,
     })
 
