@@ -6,8 +6,8 @@ import { config } from './config'
 
 async function shutdown() {
   logger.info('Shutting down')
-  await graphQlServer.stop()
   await orbitDbService.stop()
+  await graphQlServer.stop()
   logger.info('Done')
 }
 

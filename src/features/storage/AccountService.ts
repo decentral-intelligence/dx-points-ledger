@@ -54,6 +54,11 @@ export class AccountService extends DataSource {
     return null
   }
 
+  public getAccountByPublicKey(publicKey: string): Account | null {
+    const id = getAccountIdFromPublicKey(publicKey)
+    return this.getAccount(id)
+  }
+
   public getAllAccounts(): Account[] {
     return this.accounts.get('')
   }

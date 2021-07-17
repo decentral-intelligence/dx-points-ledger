@@ -1,61 +1,43 @@
 const { writeFileSync } = require('fs')
-const { prompt } = require('inquirer')
-const { generateKeyPairSync } = require('crypto')
+const { Crypto } = require('@peculiar/webcrypto')
 
-const MinimumPassphraseLength = 10
+const crypto = new Crypto()
 
-const generateKeys = (passphrase) => {
-  if (passphrase.length < MinimumPassphraseLength) {
-    throw new Error(`Passphrase must have a least ${MinimumPassphraseLength} characters`)
-  }
-
-  const { publicKey, privateKey } = generateKeyPairSync('ed448', {
-    publicKeyEncoding: {
-      type: 'spki',
-      format: 'der',
+const generateKeys = async () => {
+  const keys = await crypto.subtle.generateKey(
+    {
+      name: 'ECDSA',
+      namedCurve: 'P-521', // P-256, P-384, or P-521
     },
-    privateKeyEncoding: {
-      type: 'pkcs8',
-      format: 'der',
-      cipher: 'aes-256-cbc',
-      passphrase,
-    },
-  })
+    true,
+    ['sign', 'verify'],
+  )
 
-  return {
-    publicKey,
-    privateKey,
-  }
+  return keys
+}
+
+const exportBase64Jwk = async (key) => {
+  const jwk = await crypto.subtle.exportKey('jwk', key)
+  return Buffer.from(JSON.stringify(jwk)).toString('base64')
 }
 
 ;(async () => {
-  const { passphrase } = await prompt([
-    {
-      type: 'password',
-      name: 'passphrase',
-    },
-  ])
+  const { publicKey, privateKey } = await generateKeys()
+  const publicBase64Jwk = await exportBase64Jwk(publicKey)
+  const privateBase64Jwk = await exportBase64Jwk(privateKey)
 
-  const keys = generateKeys(passphrase)
+  const publicKeyPath = `publickey.b64`
+  const privateKeyPath = `privatekey.b64`
 
-  const publickeyB64 = keys.publicKey.toString('base64')
-  const privatekeyB64 = keys.privateKey.toString('base64')
-  const publickeyPath = 'publickey.b64'
-  const privatekeyPath = 'privatekey.enc.b64'
+  writeFileSync(publicKeyPath, publicBase64Jwk, 'utf-8')
+  writeFileSync(privateKeyPath, privateBase64Jwk, 'utf-8')
 
-  writeFileSync(publickeyPath, publickeyB64, 'utf-8')
-  writeFileSync(privatekeyPath, privatekeyB64, 'utf-8')
-
-  console.log('Keys stored successfully')
-  console.log('Public Key:', publickeyPath)
-  console.log('Private Key:', privatekeyPath)
-  console.log(
-    'Store them in a safe place together with the used passphrase for the encrypted private key',
-  )
-  console.log(
-    'The public key is used for account creation, while the private is used for transaction signing',
-  )
-
-  console.log('------------ PUBLIC KEY ------------------')
-  console.log(publickeyB64)
+  console.log('Keys saved successfully')
+  console.log('---------------------------------------')
+  console.log('Public Key:', publicBase64Jwk)
+  console.log('Stored under:', publicKeyPath)
+  console.log('---------------------------------------')
+  console.log('Private Key:', privateBase64Jwk)
+  console.log('Stored under:', privateKeyPath)
+  console.log('Keep the private key file in a safe place together')
 })()
