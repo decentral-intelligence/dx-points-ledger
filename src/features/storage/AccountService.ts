@@ -25,12 +25,15 @@ export class AccountService extends DataSource {
   }
 
   public async createAccount(accountArgs: CreateAccountArgs): Promise<Account> {
-    const { publicKey } = accountArgs
+    const { publicKey, alias } = accountArgs
     const id = getAccountIdFromPublicKey(publicKey)
 
-    const foundAccounts = await this.accounts.get(id)
-    if (foundAccounts.length > 0) {
+    if (this.getAccount(id)) {
       throw new Error(`Account [${id}] already exists`)
+    }
+
+    if (alias && this.getAccountByAlias(alias)) {
+      throw new Error(`Alias [${alias}] already taken`)
     }
 
     const newAccount = Account.readFromJson({
@@ -40,7 +43,6 @@ export class AccountService extends DataSource {
       balance: 0,
     })
 
-    // @ts-ignore
     await this.accounts.put(newAccount)
     logger.debug(`Added account ${id}`)
     return newAccount
@@ -61,5 +63,12 @@ export class AccountService extends DataSource {
 
   public getAllAccounts(): Account[] {
     return this.accounts.get('')
+  }
+
+  public getAccountByAlias(alias: string): Account | null {
+    const accounts = this.accounts.query((a) => a.alias === alias)
+    if (!accounts.length) return null
+
+    return Account.readFromJson(accounts[0])
   }
 }

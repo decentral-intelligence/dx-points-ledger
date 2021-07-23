@@ -52,18 +52,14 @@ const enhancedAccountValidator = async (accountId) => {
       type: 'input',
       name: 'pkpath',
       message: 'The private keys file path',
-      default: './privatekey.enc.b64',
-    },
-    {
-      type: 'password',
-      name: 'passphrase',
-      message: 'The passphrase for the private key',
+      default: './privatekey.b64',
     },
   ])
 
-  const { sender, amount, message, recipient, passphrase, pkpath, isAirdrop } = answers
-  const encryptedPrivateKey = readFileSync(pkpath, 'utf-8')
-  const signature = signTx({ sender, recipient, amount, message, encryptedPrivateKey, passphrase })
+  const { sender, amount, message, recipient, pkpath, isAirdrop } = answers
+  const privateKeyBase64 = readFileSync(pkpath, 'utf-8')
+  const signingJwk = JSON.parse(Buffer.from(privateKeyBase64, 'base64').toString('utf-8'))
+  const signature = await signTx({ sender, recipient, amount, message, signingJwk })
 
   const payload = {
     sender,
@@ -74,7 +70,6 @@ const enhancedAccountValidator = async (accountId) => {
   }
 
   const response = await (isAirdrop ? airdropPoints(payload) : transferPoints(payload))
-
   if (response.statusCode === 200) {
     console.log('Transfer enqueued', response.data.airdropPoints || response.data.transferPoints)
   } else {

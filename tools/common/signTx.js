@@ -1,19 +1,16 @@
-const { sign, createPrivateKey } = require('crypto')
-const stringify = require('json-stable-stringify')
+const stableStringify = require('json-stable-stringify')
+const { Crypto } = require('@peculiar/webcrypto')
+const { SignAlgorithm, ECDSAParameters } = require('../common/cryptoParameters')
 
-const signTx = ({ encryptedPrivateKey, passphrase, ...data }) => {
-  const message = Buffer.from(stringify(data))
-  const decodedPrivateKey = Buffer.from(encryptedPrivateKey, 'base64')
+const crypto = new Crypto()
 
-  const privateKey = createPrivateKey({
-    key: decodedPrivateKey,
-    format: 'der',
-    type: 'pkcs8',
-    passphrase,
-  })
-
-  const signature = sign(null, message, privateKey)
-  return signature.toString('base64')
+const signTx = async ({ signingJwk, ...jsonData }) => {
+  const signingKey = await crypto.subtle.importKey('jwk', signingJwk, ECDSAParameters, false, [
+    'sign',
+  ])
+  const data = Buffer.from(stableStringify(jsonData))
+  const signature = await crypto.subtle.sign(SignAlgorithm, signingKey, data)
+  return Buffer.from(signature).toString('base64')
 }
 
 module.exports = {
