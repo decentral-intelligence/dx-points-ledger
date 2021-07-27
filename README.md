@@ -33,3 +33,7 @@ from typescript to javascript and re-executes the code on changes.
 
 [About Signatures](./SIGNING.MD)
 [More tools](./TOOLS.MD)
+
+## Docker
+
+The backbone comes with its own Dockerfile and though can be conteina
