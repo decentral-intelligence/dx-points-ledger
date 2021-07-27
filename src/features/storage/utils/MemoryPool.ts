@@ -114,5 +114,6 @@ export class MemoryPool<T> {
           })
     await promise
     this.options = null
+    this.timeoutHandler && clearTimeout(this.timeoutHandler)
   }
 }

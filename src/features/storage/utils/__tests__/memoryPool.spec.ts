@@ -2,7 +2,7 @@ import { MemoryPool } from '../MemoryPool'
 import { Seconds } from '../constants'
 
 describe('EntryPool', () => {
-  it('should trigger before timeout due to reached entry limit', () => {
+  it('should trigger before timeout due to reached entry limit', async () => {
     const callback = (_: number[]): Promise<void> => Promise.resolve()
 
     const action = jest.fn(callback)
@@ -10,7 +10,7 @@ describe('EntryPool', () => {
     const pool = new MemoryPool<number>()
 
     pool.initialize({
-      timeout: 5 * Seconds,
+      timeout: 3 * Seconds,
       limit: 5,
       action,
     })
@@ -20,9 +20,11 @@ describe('EntryPool', () => {
 
     expect(action).toBeCalledWith([1, 2, 3, 4, 5])
     expect(pool.entries).toEqual([6])
+
+    await pool.finish()
   })
 
-  it('should discard doubled entries with deduplication active', () => {
+  it('should discard doubled entries with deduplication active', async () => {
     const callback = (_: number[]): Promise<void> => Promise.resolve()
 
     const action = jest.fn(callback)
@@ -38,6 +40,8 @@ describe('EntryPool', () => {
 
     const items = [1, 1, 1, 2, 2, 3, 4, 5]
     items.forEach((n) => pool.addEntry(n))
+
+    await pool.finish()
 
     expect(action).toBeCalledWith([1, 2, 3, 4, 5])
   })
@@ -79,7 +83,7 @@ describe('EntryPool', () => {
 
     const items = [1, 2]
     items.forEach((n) => pool.addEntry(n))
-    let promise = pool.finish()
+    const promise = pool.finish()
     pool.addEntry(3)
     expect(pool.entries).toEqual([1, 2])
     await promise
