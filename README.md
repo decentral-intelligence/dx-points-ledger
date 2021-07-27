@@ -36,4 +36,10 @@ from typescript to javascript and re-executes the code on changes.
 
 ## Docker
 
-The backbone comes with its own Dockerfile and though can be conteina
+The backbone comes with its own Dockerfile.
+
+To build just run `npm run build:docker`
+
+Once build you can start a container using `npm run docker`, which runs as attached production build
+
+> To run as detached container use `npm run docker:d` (no console output)
