@@ -1,7 +1,7 @@
 import { MemoryPool } from '../MemoryPool'
 import { Seconds } from '../constants'
 
-describe('EntryPool', () => {
+describe('MemoryPool', () => {
   it('should trigger before timeout due to reached entry limit', async () => {
     const callback = (_: number[]): Promise<void> => Promise.resolve()
 
