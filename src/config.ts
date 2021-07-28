@@ -8,6 +8,15 @@ const config = convict({
     default: 'development',
     env: 'NODE_ENV',
   },
+  api: {
+    port: {
+      doc: 'Port for the GraphQL API',
+      format: Number,
+      default: 3001,
+      env: 'API_PORT',
+      arg: 'api-port',
+    },
+  },
   db: {
     transactions: {
       doc: 'Database address for transactions',
@@ -26,8 +35,11 @@ const config = convict({
   },
   ipfs: {
     repo: {
+      doc: 'Directory for IPFS to store data',
       format: String,
-      default: null,
+      default: './ipfs',
+      env: 'IPFS_REPO',
+      arg: 'ipfs-repo',
     },
     silent: {
       format: Boolean,
@@ -36,8 +48,11 @@ const config = convict({
     config: {
       Addresses: {
         Swarm: {
+          doc: 'The swarm addresses for IPFS',
           format: Array,
           default: ['/ip4/0.0.0.0/tcp/4011', '/ip4/0.0.0.0/tcp/4012/ws'],
+          env: 'IPFS_ADDRESSES',
+          arg: 'ipfs-addresses',
         },
       },
       Bootstrap: {
