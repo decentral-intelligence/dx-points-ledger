@@ -12,5 +12,5 @@ RUN yarn
 RUN apk del .gyp
 RUN apk del git
 RUN ls -al
-EXPOSE 3001
+EXPOSE 3001 4001 4011 4012
 CMD ["pm2-runtime","./main.js"]

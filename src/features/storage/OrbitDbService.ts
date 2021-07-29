@@ -34,7 +34,7 @@ export class OrbitDbService {
   private _accounts: DocumentStore<Account> | undefined
 
   private async initAccounts(address: string): Promise<void> {
-    logger.info(`Loading database...`)
+    logger.info(`Loading accounts database... - Address: ${address}`)
     this._accounts = await this.orbitdb?.docstore(address, {
       accessController: {
         write: ['*'],
@@ -45,7 +45,7 @@ export class OrbitDbService {
   }
 
   private async initTransactions(address: string): Promise<void> {
-    logger.info(`Loading database...`)
+    logger.info(`Loading transactions database... - Address: ${address}`)
     this._transactions = await this.orbitdb?.log(address)
     await this._transactions?.load()
     logger.info(`Database initialized - Address: ${this._transactions?.address}`)
