@@ -46,7 +46,11 @@ export class OrbitDbService {
 
   private async initTransactions(address: string): Promise<void> {
     logger.info(`Loading transactions database... - Address: ${address}`)
-    this._transactions = await this.orbitdb?.log(address)
+    this._transactions = await this.orbitdb?.log(address, {
+      accessController: {
+        write: ['*'],
+      },
+    })
     await this._transactions?.load()
     logger.info(`Database initialized - Address: ${this._transactions?.address}`)
   }
