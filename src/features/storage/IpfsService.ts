@@ -8,11 +8,24 @@ export class IpfsService {
 
   private _ipfs: any
 
-  public async start(config: unknown): Promise<void> {
+  public async start(config: any): Promise<void> {
+    const ipfsConfig = {
+      Discovery: {
+        MDNS: {
+          Enabled: false,
+          Interval: 10,
+        },
+      },
+      EXPERIMENTAL: {
+        pubsub: true,
+      },
+      ...config,
+    }
+
     logger.info('Booting IPFS...')
-    logger.debug(JSON.stringify(config))
+    logger.debug(JSON.stringify(ipfsConfig))
     // @ts-ignore
-    this._ipfs = await Ipfs.create(config)
+    this._ipfs = await Ipfs.create(ipfsConfig)
     const identity = await this._ipfs.id()
     logger.info(`IPFS started - Id: ${identity.id}`)
   }

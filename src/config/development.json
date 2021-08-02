@@ -11,8 +11,8 @@
         "Swarm": ["/ip4/0.0.0.0/tcp/4011", "/ip4/0.0.0.0/tcp/4012/ws"]
       },
       "Bootstrap": [
-        "/ip4/127.0.0.1/tcp/4001/p2p/QmTW2V77WZzWXk1u7RQHwZGr9SMktVvibWns8oYwQsCfHQ",
-        "/ip4/179.225.159.117/tcp/4001/p2p/QmeHrccq46wUWjfw6Mf6Lszrs3nM1fAMJmGM1kME5J3tMK"
+        "/ip4/127.0.0.1/tcp/4001/p2p/Qmc6N3TV3kK4b2gKr5jonDwc7Ynm4BW8BqrT9pcqvVJTiM",
+        "/ip4/187.107.144.93/tcp/4001/p2p/Qmccpr62AiwwF4eFwrhqsAv9vHVHbrZh5D8pSWfrzLoGQ2"
       ]
     }
   },
