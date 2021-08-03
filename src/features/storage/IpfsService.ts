@@ -10,15 +10,6 @@ export class IpfsService {
 
   public async start(config: any): Promise<void> {
     const ipfsConfig = {
-      Discovery: {
-        MDNS: {
-          Enabled: false,
-          Interval: 10,
-        },
-      },
-      EXPERIMENTAL: {
-        pubsub: true,
-      },
       ...config,
     }
 

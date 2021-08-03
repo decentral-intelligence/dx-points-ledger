@@ -10,10 +10,7 @@
       "Addresses": {
         "Swarm": ["/ip4/0.0.0.0/tcp/4011", "/ip4/0.0.0.0/tcp/4012/ws"]
       },
-      "Bootstrap": [
-        "/ip4/127.0.0.1/tcp/4001/p2p/QmTW2V77WZzWXk1u7RQHwZGr9SMktVvibWns8oYwQsCfHQ",
-        "/ip4/179.225.159.117/tcp/4001/p2p/QmeHrccq46wUWjfw6Mf6Lszrs3nM1fAMJmGM1kME5J3tMK"
-      ]
+      "Bootstrap": []
     }
   },
   "verifySignatures": true,

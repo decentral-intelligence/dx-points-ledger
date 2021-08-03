@@ -7,6 +7,7 @@ import { OrbitDbServiceOptions } from './types/OrbitDbServiceOptions'
 import { TransactionData } from './models/TransactionData'
 import { IpfsService } from './IpfsService'
 import { MemoryPool } from './utils'
+import { config } from '../../config'
 
 export class OrbitDbService {
   get transactionsPool(): MemoryPool<TransactionData> {
@@ -52,7 +53,29 @@ export class OrbitDbService {
       },
     })
     await this._transactions?.load()
+
     logger.info(`Database initialized - Address: ${this._transactions?.address}`)
+  }
+
+  private initializeEventHandlers() {
+    if (config.get('env') !== 'development') {
+      return
+    }
+    this._transactions?.events.on('peer', (peer) => {
+      logger.info(`Transactions: New peer connected: ${peer}`)
+    })
+    this._transactions?.events.on('replicated', () => {
+      logger.info('Transactions replicated')
+    })
+
+    this._accounts?.events.on('peer', (peer) => {
+      logger.info(`Accounts: New peer connected: ${peer}`)
+    })
+    this.accounts?.events.on('replicated', () => {
+      logger.info('Accounts replicated')
+    })
+
+    logger.info('Initialized Event Handlers')
   }
 
   public async start(options: OrbitDbServiceOptions): Promise<void> {
@@ -65,6 +88,7 @@ export class OrbitDbService {
       this.initAccounts(accountsDatabaseAddress),
       this.initTransactions(transactionsDatabaseAddress),
     ])
+    this.initializeEventHandlers()
   }
 
   public async stop(): Promise<void> {
