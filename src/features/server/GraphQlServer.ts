@@ -28,7 +28,8 @@ export class GraphQlServer {
       }),
     })
     const port = config.get('api.port')
-    const { url } = await this.server.listen({ port })
+    const host = config.get('api.host')
+    const { url } = await this.server.listen({ port, host })
     logger.info(`Apollo running on ${url}`)
   }
 

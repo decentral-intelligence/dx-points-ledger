@@ -16,6 +16,13 @@ const config = convict({
       env: 'API_PORT',
       arg: 'api-port',
     },
+    host: {
+      doc: 'Host Url for the GraphQL API',
+      format: String,
+      default: 'localhost',
+      env: 'API_HOST',
+      arg: 'api-host',
+    },
   },
   db: {
     transactions: {
