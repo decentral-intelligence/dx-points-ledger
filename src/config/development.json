@@ -1,10 +1,7 @@
 {
-  "api": {
-    "host": "192.168.1.16"
-  },
   "db": {
-    "transactions": "xpoints:transactions",
-    "accounts": "xpoints:accounts"
+    "transactions": "/orbitdb/zdpuB3ZFywwfoX1e9hjABupHTj7iFKv6yqAuifGy2qEE7Sxvg/xpoints:transactions",
+    "accounts": "/orbitdb/zdpuAwZc8j9DbZMsj1JWRC36BT8FsrZB6muQom5BHxKvRQbmT/xpoints:accounts"
   },
   "ipfs": {
     "repo": "./ipfs",
@@ -13,7 +10,9 @@
       "Addresses": {
         "Swarm": ["/ip4/0.0.0.0/tcp/4011", "/ip4/0.0.0.0/tcp/4012/ws"]
       },
-      "Bootstrap": ["/ip4/127.0.0.1/tcp/4001/p2p/QmZYwAmU85NrZQYfoauRhoHmAwpPzUWwatx4zNsXxyQpe1"]
+      "Bootstrap": [
+        "/ip4/34.135.247.31/tcp/4011/p2p/QmYVKxNgtEEjnsVt6DCRRbXyz4uWrwXWR99ojJKcySVe8s"
+      ]
     }
   },
   "verifySignatures": false,

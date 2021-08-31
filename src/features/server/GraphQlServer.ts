@@ -1,4 +1,5 @@
 import { ApolloServer } from 'apollo-server'
+import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core'
 import { resolvers, typeDefs } from './graphql'
 import { logger } from '../@common/logger'
 import { provideAccountService, provideTransactionService } from '../storage/utils'
@@ -7,7 +8,7 @@ import { config } from '../../config'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 const DefaultConfig = {
-  playground: true,
+  playground: isDevelopment,
   introspection: true,
   tracing: isDevelopment,
   debug: isDevelopment,
@@ -26,6 +27,7 @@ export class GraphQlServer {
         accounts: provideAccountService(),
         transactions: provideTransactionService(),
       }),
+      plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     })
     const port = config.get('api.port')
     const host = config.get('api.host')
