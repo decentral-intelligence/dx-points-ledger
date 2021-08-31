@@ -1,4 +1,7 @@
 {
+  "api": {
+    "key": "development"
+  },
   "db": {
     "transactions": "/orbitdb/zdpuB3ZFywwfoX1e9hjABupHTj7iFKv6yqAuifGy2qEE7Sxvg/xpoints:transactions",
     "accounts": "/orbitdb/zdpuAwZc8j9DbZMsj1JWRC36BT8FsrZB6muQom5BHxKvRQbmT/xpoints:accounts"

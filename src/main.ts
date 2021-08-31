@@ -15,8 +15,17 @@ const eventuallyPrintSecurityWarning = () => {
   if (!config.get('verifySignatures')) {
     logger.warn(`
 ==========================================================
-
+                  -- SECURITY WARNING --
             SIGNATURE VERIFICATION NOT ACTIVE
+    
+==========================================================    
+    `)
+  }
+  if (!config.get('api.key')) {
+    logger.warn(`
+==========================================================
+                  -- SECURITY WARNING --
+                   NO API KEY DEFINED
     
 ==========================================================    
     `)

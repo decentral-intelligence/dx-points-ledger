@@ -44,6 +44,12 @@ const enhancedAccountValidator = async (accountId) => {
     },
     {
       type: 'input',
+      name: 'apikey',
+      when: ({ isAirdrop }) => isAirdrop,
+      message: 'What is the Api key for air drop?',
+    },
+    {
+      type: 'input',
       name: 'message',
       message: 'Enter an additional message',
       default: null,
@@ -56,7 +62,7 @@ const enhancedAccountValidator = async (accountId) => {
     },
   ])
 
-  const { sender, amount, message, recipient, pkpath, isAirdrop } = answers
+  const { sender, amount, message, recipient, pkpath, isAirdrop, apikey } = answers
   const privateKeyBase64 = readFileSync(pkpath, 'utf-8')
   const signingJwk = JSON.parse(Buffer.from(privateKeyBase64, 'base64').toString('utf-8'))
   const signature = await signTx({ sender, recipient, amount, message, signingJwk })
@@ -69,7 +75,7 @@ const enhancedAccountValidator = async (accountId) => {
     signature,
   }
 
-  const response = await (isAirdrop ? airdropPoints(payload) : transferPoints(payload))
+  const response = await (isAirdrop ? airdropPoints(payload, apikey) : transferPoints(payload))
   if (response.statusCode === 200) {
     console.log('Transfer enqueued', response.data.airdropPoints || response.data.transferPoints)
   } else {

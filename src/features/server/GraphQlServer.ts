@@ -23,6 +23,11 @@ export class GraphQlServer {
       ...DefaultConfig,
       resolvers,
       typeDefs,
+      context: ({ req }) => {
+        return {
+          key: req.headers['x-api-key'],
+        }
+      },
       dataSources: () => ({
         accounts: provideAccountService(),
         transactions: provideTransactionService(),

@@ -36,6 +36,12 @@ const exportBase64Jwk = async (key) => {
       name: 'alias',
       message: "If you want, what's the accounts alias?",
     },
+    {
+      type: 'input',
+      name: 'apikey',
+      when: ({ role }) => role === 'Admin',
+      message: 'What is the Api key for account creation?',
+    },
   ])
 
   const { role, alias } = answers

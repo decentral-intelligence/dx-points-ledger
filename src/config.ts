@@ -23,6 +23,13 @@ const config = convict({
       env: 'API_HOST',
       arg: 'api-host',
     },
+    key: {
+      doc: 'Permission Key for permissive api calls, e.g. user creation',
+      format: String,
+      default: null,
+      env: 'API_KEY',
+      arg: 'api-key',
+    },
   },
   db: {
     transactions: {
