@@ -6,9 +6,10 @@ COPY package.json ./
 COPY tsconfig.json ./
 COPY ./src ./src
 RUN yarn
+RUN yarn global add pm2
 RUN yarn build
 
-COPY ./build ./
+RUN cp -r ./build/** ./
 
 RUN rm -rf ./src
 RUN rm -rf ./build
@@ -18,5 +19,4 @@ RUN apk del git
 RUN ls -al
 EXPOSE 3001 4001 4011 4012
 
-RUN yarn global add pm2
 CMD ["pm2-runtime","./main.js"]
