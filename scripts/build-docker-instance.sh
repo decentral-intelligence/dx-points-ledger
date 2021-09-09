@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build . -t dx-points-backbone --pull --no-cache
+docker build . -t dx-points-ledger --pull --no-cache

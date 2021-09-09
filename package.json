@@ -1,13 +1,13 @@
 {
-  "name": "dx-points-backbone",
+  "name": "dx-points-ledger",
   "version": "1.0.0",
-  "description": "Decentralized Backbone for DxPoints et al",
+  "description": "Decentralized Ledger for DxPoints et al",
   "scripts": {
     "start": "npm run build && node ./build/main.js",
     "prebuild": "npm run prebuild:cleanup && npm run prebuild:copygql",
     "prebuild:cleanup": "rimraf ./build",
     "prebuild:copygql": "copyfiles -u 1 \"./src/**/*.graphql\" \"./src/config/*.json\" ./build",
-    "docker:d": "docker run -e NODE_ENV=production -d -p 3001:3001 dx-points-backbone",
+    "docker:d": "docker run -e NODE_ENV=production -d -p 3001:3001 dx-points-ledger",
     "docker": "./scripts/start-docker-instance.sh",
     "build:docker": "./scripts/build-docker-instance.sh",
     "dev": "NODE_ENV=development nodemon",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/decentral-intelligence/dx-points-backbone.git"
+    "url": "git+https://github.com/decentral-intelligence/dx-points-ledger.git"
   },
   "keywords": [
     "web3.0",
@@ -35,9 +35,9 @@
   "author": "ohager",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/decentral-intelligence/dx-points-backbone/issues"
+    "url": "https://github.com/decentral-intelligence/dx-points-ledger/issues"
   },
-  "homepage": "https://github.com/decentral-intelligence/dx-points-backbone#readme",
+  "homepage": "https://github.com/decentral-intelligence/dx-points-ledger#readme",
   "devDependencies": {
     "@types/convict": "^6.0.2",
     "@types/inquirer": "^7.3.1",

@@ -16,9 +16,9 @@ npm run tool-gen-account-keys
 ```
 
 ```
-ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-backbone$ npm run tool-gen-account-keys
+ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-ledger$ npm run tool-gen-account-keys
 
-> dx-points-backbone@1.0.0 tool-gen-account-keys /home/ohager/code/dextra/dia/dx-points-backbone
+> dx-points-ledger@1.0.0 tool-gen-account-keys /home/ohager/code/dextra/dia/dx-points-ledger
 > node ./tools/generateAccountKeys.js
 
 ? passphrase: [hidden]
@@ -39,7 +39,7 @@ Follow the instructions and keep the passphrase and the private key file secretl
 Once you have the public key you can go to the graphql playground and execute the following mutation
 
 ```graphql
-mutation($input: AccountInput!) {
+mutation ($input: AccountInput!) {
   createAccount(args: $input) {
     alias
     _id
@@ -81,7 +81,7 @@ To send a transaction (transfer or airdrop) on a low level you may use the Apoll
 Use the following graphql statement
 
 ```graphql
-mutation($input: TransferInput!) {
+mutation ($input: TransferInput!) {
   transferPoints(args: $input)
 }
 ```
@@ -102,9 +102,9 @@ As you can see there's a signature field, which is required. The signature can b
 `npm run tool-sign-tx` command. Just follow the instructions.
 
 ```
-ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-backbone$ npm run tool-sign-tx
+ohager@ohager-XPS-15-9560:~/code/dextra/dia/dx-points-ledger npm run tool-sign-tx
 
-> dx-points-backbone@1.0.0 tool-sign-tx /home/ohager/code/dextra/dia/dx-points-backbone
+> dx-points-ledger@1.0.0 tool-sign-tx /home/ohager/code/dextra/dia/dx-points-ledger
 > node ./tools/signTransaction.js
 
 ? What's the senders id? XPOINTZ-E9CF-YEQX-EFX3-5CKSL

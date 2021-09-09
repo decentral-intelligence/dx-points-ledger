@@ -1,6 +1,6 @@
-# dx-points-backbone
+# dx-points-ledger
 
-Decentralized Backbone for persisting points/tokens
+Decentralized Ledger for persisting points/tokens
 
 This is a simple service to provide access to the distributed
 storage of xPoints.
@@ -36,7 +36,7 @@ from typescript to javascript and re-executes the code on changes.
 
 ## Docker
 
-The backbone comes with its own Dockerfile.
+The ledger comes with its own Dockerfile.
 
 To build just run `npm run build:docker`
 

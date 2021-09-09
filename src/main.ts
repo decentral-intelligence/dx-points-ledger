@@ -33,7 +33,7 @@ const eventuallyPrintSecurityWarning = () => {
 }
 
 async function start() {
-  logger.info('Starting XPoints Backbone')
+  logger.info('Starting DxPoints Ledger')
   const ipfsService = new IpfsService()
   await ipfsService.start(config.get('ipfs'))
   await orbitDbService.start({
