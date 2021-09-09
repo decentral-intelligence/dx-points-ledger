@@ -25,7 +25,7 @@ export const airdropPointsResolver = (
       sender,
       recipient,
     })
-  } catch (e) {
+  } catch (e: any) {
     logger.error(e.message)
     if (e instanceof NotAllowedError) {
       throw new ForbiddenError(e.message)

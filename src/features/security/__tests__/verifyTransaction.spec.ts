@@ -1,4 +1,3 @@
-// @ts-ignore
 import stableStringify from 'json-stable-stringify'
 import { verifyTransaction } from '../verifyTransaction'
 import { AccountData } from '../../storage/models/Account'
@@ -59,7 +58,7 @@ describe('verifyTransaction', () => {
       isActive: true,
       role: AccountRole.Admin,
     }
-    const transactionData: any = {
+    const transactionData = {
       message: 'Some message',
       sender: 'senderId',
       recipient: 'recipientId',
@@ -74,12 +73,13 @@ describe('verifyTransaction', () => {
       hash: 'somehash',
       timestamp: 1000,
       signature: Buffer.from(signature).toString('base64'),
+      tags: [],
     }
 
     try {
       await verifyTransaction(signedTransaction, sender)
       expect('Should throw error').toBeFalsy()
-    } catch (e) {
+    } catch (e: any) {
       expect(e.message).toContain('Transaction cannot be verified:')
     }
   })

@@ -41,7 +41,7 @@
   "devDependencies": {
     "@types/convict": "^6.0.2",
     "@types/inquirer": "^7.3.1",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^27.0.1",
     "@types/node": "^15.6.1",
     "@types/orbit-db": "git+https://github.com/orbitdb/orbit-db-types.git",
     "@types/pino": "^6.3.8",
@@ -60,9 +60,9 @@
     "pretty-quick": "^3.1.0",
     "rimraf": "^3.0.2",
     "serverless": "^2.55.0",
-    "ts-jest": "^27.0.0",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.2.4"
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
   },
   "dependencies": {
     "@peculiar/webcrypto": "^1.1.7",

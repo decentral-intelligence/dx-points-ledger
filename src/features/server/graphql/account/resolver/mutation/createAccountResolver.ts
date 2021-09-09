@@ -16,7 +16,7 @@ export const createAccountResolver = (
     verifyPermission(role, key)
     logger.debug(`Adding account ${JSON.stringify(args)}`)
     return dataSources.accounts.createAccount({ publicKey, role, alias })
-  } catch (e) {
+  } catch (e: any) {
     logger.error(e.message)
     if (e instanceof NotAllowedError) {
       throw new ForbiddenError(e.message)

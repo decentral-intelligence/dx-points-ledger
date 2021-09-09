@@ -51,7 +51,7 @@ async function start() {
     onShutdown(shutdown)
     await start()
     logger.info('System up and running fine')
-  } catch (e) {
+  } catch (e: any) {
     logger.error(e)
     logger.error('Snap - Loading failed')
     await shutdown()

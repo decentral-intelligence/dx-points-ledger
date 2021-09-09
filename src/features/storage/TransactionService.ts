@@ -159,7 +159,7 @@ export class TransactionService extends DataSource {
     try {
       const id = await this.transactions.add(transactionData)
       logger.info(`Transaction [${transactionData.hash}] successfully recorded - id: ${id}`)
-    } catch (e) {
+    } catch (e: any) {
       logger.error(e)
     }
   }
