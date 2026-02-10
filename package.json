@@ -72,7 +72,7 @@
     "graphql": "^15.5.2",
     "graphql-tools": "^7.0.5",
     "inquirer": "^8.1.0",
-    "ipfs": "^0.51.0",
+    "ipfs": "^0.66.1",
     "ipfs-http-client": "^44.3.0",
     "json-stable-stringify": "^1.0.1",
     "node-graceful-shutdown": "^1.1.0",
